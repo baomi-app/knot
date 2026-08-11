@@ -10,7 +10,6 @@ settings:
     MARKETING_VERSION: "0.1.0"
     CURRENT_PROJECT_VERSION: "1"
     CODE_SIGN_STYLE: Automatic
-    DEVELOPMENT_TEAM: HA3AN589MD
 targets:
   Knot:
     type: application
@@ -28,7 +27,7 @@ targets:
         LSUIElement: true
         NSHighResolutionCapable: true
         NSScreenCaptureUsageDescription: Knot uses screen capture only when you run a capture command.
-        NSHumanReadableCopyright: Copyright © 2026 Yang Zhou. All rights reserved.
+        NSHumanReadableCopyright: Copyright © 2026 baomi.app. All rights reserved.
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: app.baomi.knot

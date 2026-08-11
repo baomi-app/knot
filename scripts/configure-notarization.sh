@@ -2,7 +2,7 @@
 set -euo pipefail
 
 PROFILE="${NOTARY_PROFILE:-KnotNotary}"
-TEAM_ID="${DEVELOPMENT_TEAM:-HA3AN589MD}"
+TEAM_ID="${DEVELOPMENT_TEAM:?Set DEVELOPMENT_TEAM to your Apple Developer team ID}"
 
 read -r -p "Apple ID: " APPLE_ID
 read -r -s -p "App-specific password: " APP_PASSWORD
