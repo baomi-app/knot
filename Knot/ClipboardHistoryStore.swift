@@ -117,6 +117,7 @@ final class ClipboardHistoryStore {
             kSecClass: kSecClassGenericPassword,
             kSecAttrService: keychainService,
             kSecAttrAccount: keychainAccount,
+            kSecUseAuthenticationUI: kSecUseAuthenticationUIFail,
             kSecReturnData: true,
             kSecMatchLimit: kSecMatchLimitOne
         ]
@@ -143,7 +144,8 @@ final class ClipboardHistoryStore {
         let match: [CFString: Any] = [
             kSecClass: kSecClassGenericPassword,
             kSecAttrService: keychainService,
-            kSecAttrAccount: keychainAccount
+            kSecAttrAccount: keychainAccount,
+            kSecUseAuthenticationUI: kSecUseAuthenticationUIFail
         ]
         return SecItemUpdate(
             match as CFDictionary,

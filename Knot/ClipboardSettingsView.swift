@@ -103,4 +103,3 @@ struct ClipboardSettingsView: View {
         newBundleID = ""
     }
 }
-

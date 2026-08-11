@@ -6,7 +6,7 @@ struct KnotApp: App {
     @StateObject private var launcherStore = LauncherShortcutStore.shared
 
     var body: some Scene {
-        MenuBarExtra("Knot", systemImage: "command") {
+        MenuBarExtra("Knot", image: "KnotMenuBar") {
             Button("Open Knot") {
                 appDelegate.togglePanel()
             }

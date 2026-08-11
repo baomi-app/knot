@@ -45,7 +45,8 @@ private struct OnboardingView: View {
     var body: some View {
         VStack(spacing: 24) {
             VStack(spacing: 10) {
-                Image(systemName: "command")
+                Image("KnotMenuBar")
+                    .renderingMode(.template)
                     .font(.system(size: 42, weight: .semibold))
                     .foregroundStyle(Color.accentColor)
                 Text("Tie your Mac tools together")

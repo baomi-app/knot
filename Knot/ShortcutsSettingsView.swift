@@ -19,7 +19,11 @@ struct ShortcutsSettingsView: View {
 
             Grid(alignment: .leading, horizontalSpacing: 18, verticalSpacing: 7) {
                 GridRow {
-                    Label("Open Knot Search", systemImage: "command")
+                    Label {
+                        Text("Open Knot Search")
+                    } icon: {
+                        Image("KnotMenuBar")
+                    }
                         .frame(width: 220, alignment: .leading)
                     ShortcutRecorderView(
                         keyCode: launcherStore.shortcut.keyCode,
