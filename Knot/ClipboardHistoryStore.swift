@@ -49,9 +49,12 @@ struct ClipboardEntry: Codable, Identifiable, Hashable, Sendable {
 
 @MainActor
 final class ClipboardHistoryStore {
-    private let keychainService = "app.baomi.knot.clipboard"
+    // v2 intentionally leaves the key created by development builds untouched.
+    // Its legacy ACL can prompt after switching to a Developer ID release.
+    private let keychainService = "app.baomi.knot.clipboard.v2"
     private let keychainAccount = "history-key"
     private let fileManager = FileManager.default
+    private var cachedKey: SymmetricKey?
 
     func load() -> [ClipboardEntry] {
         guard let encrypted = try? Data(contentsOf: historyURL),
@@ -92,13 +95,20 @@ final class ClipboardHistoryStore {
     }
 
     private func encryptionKey() -> SymmetricKey? {
+        if let cachedKey {
+            return cachedKey
+        }
+
         if let existing = readKey() {
-            return SymmetricKey(data: existing)
+            let key = SymmetricKey(data: existing)
+            cachedKey = key
+            return key
         }
 
         let key = SymmetricKey(size: .bits256)
         let data = key.withUnsafeBytes { Data($0) }
         guard storeKey(data) else { return nil }
+        cachedKey = key
         return key
     }
 
@@ -126,6 +136,18 @@ final class ClipboardHistoryStore {
             kSecValueData: data
         ]
         let status = SecItemAdd(query as CFDictionary, nil)
-        return status == errSecSuccess || status == errSecDuplicateItem
+        guard status == errSecDuplicateItem else {
+            return status == errSecSuccess
+        }
+
+        let match: [CFString: Any] = [
+            kSecClass: kSecClassGenericPassword,
+            kSecAttrService: keychainService,
+            kSecAttrAccount: keychainAccount
+        ]
+        return SecItemUpdate(
+            match as CFDictionary,
+            [kSecValueData: data] as CFDictionary
+        ) == errSecSuccess
     }
 }

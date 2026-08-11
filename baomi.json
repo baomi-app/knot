@@ -1,8 +1,8 @@
 {
   "name": "Knot",
   "status": "beta",
-  "version": "0.1.0",
-  "build": 1,
+  "version": "0.1.1",
+  "build": 2,
   "icon": "Assets/Knot-AppIcon-source.png",
   "accent": { "from": "#25272b", "to": "#2563eb" },
   "platform": { "en": "macOS 14+", "zh": "macOS 14+" },
