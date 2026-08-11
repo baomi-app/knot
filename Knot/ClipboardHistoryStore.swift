@@ -1,5 +1,6 @@
 import CryptoKit
 import Foundation
+import LocalAuthentication
 import Security
 
 struct ClipboardEntry: Codable, Identifiable, Hashable, Sendable {
@@ -113,11 +114,13 @@ final class ClipboardHistoryStore {
     }
 
     private func readKey() -> Data? {
+        let context = LAContext()
+        context.interactionNotAllowed = true
         let query: [CFString: Any] = [
             kSecClass: kSecClassGenericPassword,
             kSecAttrService: keychainService,
             kSecAttrAccount: keychainAccount,
-            kSecUseAuthenticationUI: kSecUseAuthenticationUIFail,
+            kSecUseAuthenticationContext: context,
             kSecReturnData: true,
             kSecMatchLimit: kSecMatchLimitOne
         ]
@@ -141,11 +144,13 @@ final class ClipboardHistoryStore {
             return status == errSecSuccess
         }
 
+        let context = LAContext()
+        context.interactionNotAllowed = true
         let match: [CFString: Any] = [
             kSecClass: kSecClassGenericPassword,
             kSecAttrService: keychainService,
             kSecAttrAccount: keychainAccount,
-            kSecUseAuthenticationUI: kSecUseAuthenticationUIFail
+            kSecUseAuthenticationContext: context
         ]
         return SecItemUpdate(
             match as CFDictionary,
