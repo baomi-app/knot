@@ -1,0 +1,6 @@
+.build/
+dist/
+*.xcuserstate
+xcuserdata/
+.DS_Store
+Assets/*-candidate.png

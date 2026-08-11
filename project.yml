@@ -1,0 +1,43 @@
+name: Knot
+options:
+  bundleIdPrefix: app.baomi
+  deploymentTarget:
+    macOS: "14.0"
+  xcodeVersion: "26.0"
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    MARKETING_VERSION: "0.1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    CODE_SIGN_STYLE: Automatic
+    DEVELOPMENT_TEAM: HA3AN589MD
+targets:
+  Knot:
+    type: application
+    platform: macOS
+    sources:
+      - path: Knot
+    info:
+      path: Knot/Info.plist
+      properties:
+        CFBundleDisplayName: Knot
+        CFBundleName: Knot
+        CFBundleShortVersionString: "$(MARKETING_VERSION)"
+        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
+        LSApplicationCategoryType: public.app-category.productivity
+        LSUIElement: true
+        NSHighResolutionCapable: true
+        NSScreenCaptureUsageDescription: Knot uses screen capture only when you run a capture command.
+        NSHumanReadableCopyright: Copyright © 2026 Yang Zhou. All rights reserved.
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: app.baomi.knot
+        PRODUCT_NAME: Knot
+        GENERATE_INFOPLIST_FILE: false
+        ENABLE_HARDENED_RUNTIME: true
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ONLY_ACTIVE_ARCH: false
+    entitlements:
+      path: Knot/Knot.entitlements
+      properties:
+        com.apple.security.app-sandbox: false

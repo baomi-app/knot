@@ -1,0 +1,106 @@
+name: Release Knot
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: macos-15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Install Developer ID certificate
+        env:
+          BUILD_CERTIFICATE_BASE64: ${{ secrets.BUILD_CERTIFICATE_BASE64 }}
+          P12_PASSWORD: ${{ secrets.P12_PASSWORD }}
+          KEYCHAIN_PASSWORD: temporary-knot-release-keychain
+        run: |
+          CERTIFICATE_PATH="$RUNNER_TEMP/developer-id.p12"
+          KEYCHAIN_PATH="$RUNNER_TEMP/knot-signing.keychain-db"
+          printf '%s' "$BUILD_CERTIFICATE_BASE64" | base64 --decode -o "$CERTIFICATE_PATH"
+          security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          security set-keychain-settings -lut 21600 "$KEYCHAIN_PATH"
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          security import "$CERTIFICATE_PATH" -k "$KEYCHAIN_PATH" -P "$P12_PASSWORD" -T /usr/bin/codesign -T /usr/bin/security
+          security set-key-partition-list -S apple-tool:,apple: -s -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          security list-keychains -d user -s "$KEYCHAIN_PATH"
+
+      - name: Generate project
+        run: xcodegen generate
+
+      - name: Archive signed universal app
+        env:
+          DEVELOPMENT_TEAM: ${{ secrets.TEAM_ID }}
+        run: |
+          xcodebuild archive \
+            -project Knot.xcodeproj \
+            -scheme Knot \
+            -configuration Release \
+            -destination "generic/platform=macOS" \
+            -archivePath "$RUNNER_TEMP/Knot.xcarchive" \
+            DEVELOPMENT_TEAM="$DEVELOPMENT_TEAM" \
+            CODE_SIGN_STYLE=Manual \
+            CODE_SIGN_IDENTITY="Developer ID Application" \
+            OTHER_CODE_SIGN_FLAGS="--timestamp" \
+            ARCHS="arm64 x86_64" \
+            ONLY_ACTIVE_ARCH=NO \
+            ENABLE_USER_SCRIPT_SANDBOXING=NO
+
+      - name: Verify app
+        run: |
+          APP="$RUNNER_TEMP/Knot.xcarchive/Products/Applications/Knot.app"
+          codesign --verify --deep --strict --verbose=2 "$APP"
+          test "$(codesign -dvv "$APP" 2>&1 | awk -F= '/^Identifier=/{print $2}')" = "app.baomi.knot"
+          ARCHS="$(lipo -archs "$APP/Contents/MacOS/Knot")"
+          [[ "$ARCHS" == *arm64* && "$ARCHS" == *x86_64* ]]
+
+      - name: Create signed DMG
+        run: |
+          APP="$RUNNER_TEMP/Knot.xcarchive/Products/Applications/Knot.app"
+          STAGE="$RUNNER_TEMP/knot-dmg"
+          mkdir -p "$STAGE"
+          ditto "$APP" "$STAGE/Knot.app"
+          ln -s /Applications "$STAGE/Applications"
+          hdiutil create -volname Knot -srcfolder "$STAGE" -ov -format UDZO Knot.dmg
+          codesign --force --timestamp --sign "Developer ID Application" Knot.dmg
+
+      - name: Notarize and staple
+        env:
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
+          TEAM_ID: ${{ secrets.TEAM_ID }}
+        run: |
+          xcrun notarytool submit Knot.dmg \
+            --apple-id "$APPLE_ID" \
+            --password "$APPLE_ID_PASSWORD" \
+            --team-id "$TEAM_ID" \
+            --wait
+          xcrun stapler staple Knot.dmg
+          xcrun stapler validate Knot.dmg
+          spctl --assess --type open --context context:primary-signature --verbose=2 Knot.dmg
+          shasum -a 256 Knot.dmg > Knot.dmg.sha256
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${GITHUB_REF_NAME}" Knot.dmg Knot.dmg.sha256 \
+            --title "Knot ${GITHUB_REF_NAME}" \
+            --generate-notes
+
+      - name: Clean up temporary keychain
+        if: always()
+        run: security delete-keychain "$RUNNER_TEMP/knot-signing.keychain-db" 2>/dev/null || true

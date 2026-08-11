@@ -1,0 +1,67 @@
+{
+  "name": "Knot",
+  "status": "beta",
+  "version": "0.1.0",
+  "build": 1,
+  "icon": "Assets/Knot-AppIcon-source.png",
+  "accent": { "from": "#25272b", "to": "#2563eb" },
+  "platform": { "en": "macOS 14+", "zh": "macOS 14+" },
+  "tagline": {
+    "en": "Your everyday Mac tools, tied together.",
+    "zh": "把每天都用的 Mac 工具，系在一起。"
+  },
+  "description": {
+    "en": "Knot is a focused native Mac utility that brings search, commands, menu-bar organization, window management, clipboard history, screenshots, OCR, and Quicklinks into one lightweight entry point. It is local-first, has no account system, and asks for system permissions only when a feature needs them.",
+    "zh": "Knot 是一款轻量的原生 Mac 工具，把搜索与命令、菜单栏整理、窗口管理、剪贴板历史、截图、OCR 和 Quicklinks 收进同一个入口。它默认在本地工作，无需账号，并且只在功能需要时请求系统权限。"
+  },
+  "features": {
+    "en": [
+      "Fast global search for apps, commands, files, and Quicklinks",
+      "Menu-bar organization with a simple collapsible hidden section",
+      "Keyboard-driven window layouts with configurable shortcuts",
+      "Encrypted local clipboard history for text and images",
+      "Screenshots, in-place annotation, and on-device OCR",
+      "Configurable global shortcuts, including Command-Shift-V for clipboard history"
+    ],
+    "zh": [
+      "快速全局搜索应用、命令、文件和 Quicklinks",
+      "用简洁的折叠区域整理菜单栏图标",
+      "通过可配置快捷键管理窗口布局",
+      "在本地加密保存文字和图片剪贴板历史",
+      "支持截图、原地标注和设备端 OCR",
+      "全局快捷键均可配置，剪贴板历史默认为 Command-Shift-V"
+    ]
+  },
+  "troubleshooting": {
+    "en": "Window commands need Accessibility permission. Capture and OCR need Screen Recording permission. Open System Settings → Privacy & Security, grant the requested permission to Knot, then run the command again.",
+    "zh": "窗口命令需要辅助功能权限；截图和 OCR 需要屏幕录制权限。请在“系统设置 → 隐私与安全性”中为 Knot 开启相应权限，然后再次执行命令。"
+  },
+  "privacy": {
+    "title": {
+      "en": "Knot Privacy Policy",
+      "zh": "Knot 隐私政策"
+    },
+    "summary": {
+      "en": "Privacy policy for the Knot macOS utility.",
+      "zh": "Knot macOS 工具的隐私政策。"
+    },
+    "updated": {
+      "en": "August 11, 2026",
+      "zh": "2026年8月11日"
+    },
+    "files": {
+      "en": "docs/privacy-policy.md",
+      "zh": "docs/privacy-policy.zh.md"
+    }
+  },
+  "links": [
+    {
+      "label": { "en": "Download", "zh": "下载" },
+      "href": "https://github.com/baomi-app/knot/releases/latest/download/Knot.dmg"
+    },
+    {
+      "label": { "en": "GitHub", "zh": "GitHub" },
+      "href": "https://github.com/baomi-app/knot"
+    }
+  ]
+}
