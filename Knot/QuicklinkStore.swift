@@ -95,22 +95,38 @@ final class QuicklinkStore: ObservableObject {
             return nil
         }
 
+        var knownIDs = Set(links.map(\.id))
+        var knownKeywords = Set(links.map { Self.normalizedKeyword($0.keyword) })
+        var importedLinks: [Quicklink] = []
         var imported = 0
         var skipped = 0
         for link in document.links {
-            guard !links.contains(where: { $0.id == link.id }),
-                  isValid(
-                    title: link.title,
-                    urlTemplate: link.urlTemplate,
-                    keyword: link.keyword
+            let title = link.title.trimmingCharacters(in: .whitespacesAndNewlines)
+            let urlTemplate = link.urlTemplate.trimmingCharacters(in: .whitespacesAndNewlines)
+            let keyword = Self.normalizedKeyword(link.keyword)
+            guard !knownIDs.contains(link.id),
+                  !knownKeywords.contains(keyword),
+                  Self.hasValidFields(
+                    title: title,
+                    urlTemplate: urlTemplate,
+                    keyword: keyword
                   ) else {
                 skipped += 1
                 continue
             }
-            links.append(link)
+
+            importedLinks.append(Quicklink(
+                id: link.id,
+                title: title,
+                urlTemplate: urlTemplate,
+                keyword: keyword
+            ))
+            knownIDs.insert(link.id)
+            knownKeywords.insert(keyword)
             imported += 1
         }
 
+        links.append(contentsOf: importedLinks)
         links.sort { $0.title.localizedCaseInsensitiveCompare($1.title) == .orderedAscending }
         if imported > 0 { save() }
         return QuicklinkImportResult(imported: imported, skipped: skipped)
@@ -123,13 +139,35 @@ final class QuicklinkStore: ObservableObject {
         excluding id: UUID? = nil
     ) -> Bool {
         let cleanTitle = title.trimmingCharacters(in: .whitespacesAndNewlines)
-        let cleanKeyword = keyword.trimmingCharacters(in: .whitespacesAndNewlines).localizedLowercase
-        guard !cleanTitle.isEmpty,
-              !cleanKeyword.isEmpty,
-              !cleanKeyword.contains(where: { $0.isWhitespace }),
-              !links.contains(where: { $0.id != id && $0.keyword == cleanKeyword }),
+        let cleanURLTemplate = urlTemplate.trimmingCharacters(in: .whitespacesAndNewlines)
+        let cleanKeyword = Self.normalizedKeyword(keyword)
+        guard Self.hasValidFields(
+            title: cleanTitle,
+            urlTemplate: cleanURLTemplate,
+            keyword: cleanKeyword
+        ), !links.contains(where: {
+            $0.id != id && Self.normalizedKeyword($0.keyword) == cleanKeyword
+        }) else {
+            return false
+        }
+        return true
+    }
+
+    private static func normalizedKeyword(_ keyword: String) -> String {
+        keyword.trimmingCharacters(in: .whitespacesAndNewlines).localizedLowercase
+    }
+
+    private static func hasValidFields(
+        title: String,
+        urlTemplate: String,
+        keyword: String
+    ) -> Bool {
+        guard !title.isEmpty,
+              !keyword.isEmpty,
+              !keyword.contains(where: { $0.isWhitespace }),
               let url = URL(string: urlTemplate.replacingOccurrences(of: "{query}", with: "test")),
-              ["http", "https"].contains(url.scheme?.localizedLowercase ?? "") else {
+              ["http", "https"].contains(url.scheme?.localizedLowercase ?? ""),
+              url.host != nil else {
             return false
         }
         return true

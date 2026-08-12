@@ -74,25 +74,22 @@ struct QuicklinksSettingsView: View {
 
                 Spacer()
 
-                Button {
+                Button("Import…", systemImage: "square.and.arrow.down") {
                     importQuicklinks()
-                } label: {
-                    Image(systemName: "square.and.arrow.down")
                 }
                 .help("Import Quicklinks")
 
-                Button {
+                Button("Export…", systemImage: "square.and.arrow.up") {
                     exportQuicklinks()
-                } label: {
-                    Image(systemName: "square.and.arrow.up")
                 }
                 .help("Export Quicklinks")
             }
             .buttonStyle(.borderless)
+            .controlSize(.small)
             .padding(.horizontal, 12)
-            .frame(height: 38)
+            .frame(height: 40)
         }
-        .frame(width: 220)
+        .frame(width: 260)
     }
 
     private var editor: some View {
