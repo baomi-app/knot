@@ -17,6 +17,7 @@
 		30492F83F024F47A660505BA /* KnotBarSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09680014A7BEE4898A0EF162 /* KnotBarSettingsView.swift */; };
 		349B047ED7921876E83B3871 /* CaptureHistoryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BF7162678579A61D6C9B32A /* CaptureHistoryStore.swift */; };
 		3C6894D7E85636243C34E25D /* PopClipboardService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E21CBCBC56DE487B640A33F3 /* PopClipboardService.swift */; };
+		4D95FCDA8962AA13FF07AD11 /* SettingsWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 121F5F0078F8E8A0CE9288AC /* SettingsWindowController.swift */; };
 		51B0D9737E049699F5BF0D94 /* PopScreenCaptureService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A38543665389D94119EC59DC /* PopScreenCaptureService.swift */; };
 		57F4D82A5D0D56751D0CEB07 /* CommandPanelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA140C6E459C626E12273C29 /* CommandPanelController.swift */; };
 		5942C45B95E9711B00A4A5A0 /* PopCompatibility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0811F2864AE7CEC639CB5147 /* PopCompatibility.swift */; };
@@ -61,6 +62,7 @@
 		09680014A7BEE4898A0EF162 /* KnotBarSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KnotBarSettingsView.swift; sourceTree = "<group>"; };
 		0CB4CB69EBF7F625612DC32E /* QuicklinkStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuicklinkStore.swift; sourceTree = "<group>"; };
 		0DF090CBCDBD9A760225D897 /* PopRegionSelectionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopRegionSelectionController.swift; sourceTree = "<group>"; };
+		121F5F0078F8E8A0CE9288AC /* SettingsWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsWindowController.swift; sourceTree = "<group>"; };
 		12CD012BAD90C8D19349ACFC /* FileSearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileSearch.swift; sourceTree = "<group>"; };
 		15974E46CA8D13D392F07A01 /* SearchItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchItem.swift; sourceTree = "<group>"; };
 		1B3A665026A06437BFB3336C /* PopAnnotation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopAnnotation.swift; sourceTree = "<group>"; };
@@ -163,6 +165,7 @@
 				2D9A39C3680995DA6A9116DF /* SearchModel.swift */,
 				9BE60E7A9390565E9C74A0B1 /* SearchUsageStore.swift */,
 				59B83C6F50D297095D5D9AEC /* SearchView.swift */,
+				121F5F0078F8E8A0CE9288AC /* SettingsWindowController.swift */,
 				C65637806E6DFBA8FF72C2C8 /* ShortcutRecorderView.swift */,
 				C87A8A3BE25863F4F68017DB /* ShortcutsSettingsView.swift */,
 				1C53A43B21AE8FEAEA4968C2 /* WindowManager.swift */,
@@ -290,6 +293,7 @@
 				86A6620519DD9DE4C1694164 /* SearchModel.swift in Sources */,
 				E0BE4ADEA44C2C3FCC9FB715 /* SearchUsageStore.swift in Sources */,
 				5BAC7D4E697CF7C63BE66DFA /* SearchView.swift in Sources */,
+				4D95FCDA8962AA13FF07AD11 /* SettingsWindowController.swift in Sources */,
 				E38940072D630093E55CD693 /* ShortcutRecorderView.swift in Sources */,
 				1D8506831BF9303232C4E75A /* ShortcutsSettingsView.swift in Sources */,
 				00DE5FF95F1858236836EEAC /* WindowManager.swift in Sources */,

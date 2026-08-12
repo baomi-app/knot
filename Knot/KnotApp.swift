@@ -18,9 +18,10 @@ struct KnotApp: App {
 
             Divider()
 
-            SettingsLink {
-                Text("Settings…")
+            Button("Settings…") {
+                appDelegate.showSettings()
             }
+            .keyboardShortcut(",", modifiers: .command)
 
             Divider()
 
@@ -30,10 +31,5 @@ struct KnotApp: App {
             .keyboardShortcut("q")
         }
         .menuBarExtraStyle(.menu)
-
-        Settings {
-            KnotSettingsView()
-        }
-        .windowResizability(.contentSize)
     }
 }

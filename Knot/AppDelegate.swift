@@ -28,6 +28,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var clipboardShortcutCancellable: AnyCancellable?
     private var isHotKeyRegistrationScheduled = false
     private let onboardingController = OnboardingController()
+    private lazy var settingsWindowController = SettingsWindowController()
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         panelController = CommandPanelController(model: model)
@@ -69,6 +70,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     func togglePanel() {
         panelController?.toggle()
+    }
+
+    func showSettings() {
+        settingsWindowController.show()
     }
 
     private func installHotKeyEventHandler() {
