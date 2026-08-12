@@ -3,12 +3,24 @@ import SwiftUI
 
 private final class CommandPanel: NSPanel {
     var onCancel: (() -> Void)?
+    var onShowSettings: (() -> Void)?
 
     override var canBecomeKey: Bool { true }
     override var canBecomeMain: Bool { false }
 
     override func cancelOperation(_ sender: Any?) {
         onCancel?()
+    }
+
+    override func performKeyEquivalent(with event: NSEvent) -> Bool {
+        let shortcutModifiers = event.modifierFlags.intersection([
+            .command, .option, .control, .shift
+        ])
+        if event.charactersIgnoringModifiers == ",", shortcutModifiers == .command {
+            onShowSettings?()
+            return true
+        }
+        return super.performKeyEquivalent(with: event)
     }
 }
 
@@ -17,7 +29,7 @@ final class CommandPanelController: NSObject, NSWindowDelegate {
     private let model: SearchModel
     private let panel: CommandPanel
 
-    init(model: SearchModel) {
+    init(model: SearchModel, onShowSettings: @escaping () -> Void) {
         self.model = model
         panel = CommandPanel(
             contentRect: NSRect(x: 0, y: 0, width: 720, height: 486),
@@ -29,6 +41,10 @@ final class CommandPanelController: NSObject, NSWindowDelegate {
 
         panel.delegate = self
         panel.onCancel = { [weak self] in self?.close() }
+        panel.onShowSettings = { [weak self] in
+            self?.close()
+            onShowSettings()
+        }
         panel.level = .statusBar
         panel.isFloatingPanel = true
         panel.hidesOnDeactivate = true

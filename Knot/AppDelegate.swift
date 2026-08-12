@@ -31,7 +31,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private lazy var settingsWindowController = SettingsWindowController()
 
     func applicationDidFinishLaunching(_ notification: Notification) {
-        panelController = CommandPanelController(model: model)
+        panelController = CommandPanelController(model: model) { [weak self] in
+            self?.showSettings()
+        }
         installHotKeyEventHandler()
         registerAllHotKeys()
         shortcutCancellable = shortcutStore.$shortcuts
