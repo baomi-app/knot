@@ -28,7 +28,9 @@ final class QuicklinkStore: ObservableObject {
 
     private init() {
         let loadedLinks = load()
-        links = loadedLinks.filter { !Self.isLegacyChatGPTDefault($0) }
+        links = loadedLinks
+            .filter { !Self.isLegacyChatGPTDefault($0) }
+            .map(Self.migratingLegacyDefault)
         if links.isEmpty {
             links = Self.defaultLinks
         }
@@ -204,8 +206,26 @@ final class QuicklinkStore: ObservableObject {
             urlTemplate: "https://www.google.com/search?q={query}",
             keyword: "g"
         ),
-        Quicklink(title: "GitHub", urlTemplate: "https://github.com", keyword: "gh")
+        Quicklink(
+            title: "Search GitHub",
+            urlTemplate: "https://github.com/search?q={query}",
+            keyword: "gh"
+        )
     ]
+
+    private static func migratingLegacyDefault(_ link: Quicklink) -> Quicklink {
+        guard link.title == "GitHub",
+              link.urlTemplate == "https://github.com",
+              link.keyword == "gh" else {
+            return link
+        }
+        return Quicklink(
+            id: link.id,
+            title: "Search GitHub",
+            urlTemplate: "https://github.com/search?q={query}",
+            keyword: "gh"
+        )
+    }
 
     private static func isLegacyChatGPTDefault(_ link: Quicklink) -> Bool {
         link.title == "ChatGPT"
