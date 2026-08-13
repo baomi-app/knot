@@ -4,6 +4,7 @@ import SwiftUI
 private final class CommandPanel: NSPanel {
     var onCancel: (() -> Void)?
     var onShowSettings: (() -> Void)?
+    var onAcceptSuggestion: (() -> Bool)?
 
     override var canBecomeKey: Bool { true }
     override var canBecomeMain: Bool { false }
@@ -28,6 +29,7 @@ private final class CommandPanel: NSPanel {
 final class CommandPanelController: NSObject, NSWindowDelegate {
     private let model: SearchModel
     private let panel: CommandPanel
+    private var keyEventMonitor: Any?
 
     init(model: SearchModel, onShowSettings: @escaping () -> Void) {
         self.model = model
@@ -44,6 +46,21 @@ final class CommandPanelController: NSObject, NSWindowDelegate {
         panel.onShowSettings = { [weak self] in
             self?.close()
             onShowSettings()
+        }
+        panel.onAcceptSuggestion = { [weak model] in
+            model?.acceptSelectedSuggestion() ?? false
+        }
+        keyEventMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak panel] event in
+            let shortcutModifiers = event.modifierFlags.intersection([
+                .command, .option, .control, .shift
+            ])
+            guard event.window === panel,
+                  event.keyCode == 48,
+                  shortcutModifiers.isEmpty,
+                  panel?.onAcceptSuggestion?() == true else {
+                return event
+            }
+            return nil
         }
         panel.level = .statusBar
         panel.isFloatingPanel = true
