@@ -434,6 +434,7 @@ final class SearchModel: ObservableObject {
 
         if aliases.contains(where: { $0.hasPrefix(needle) }) { return 85 }
         if words(in: subtitle).contains(where: { $0.hasPrefix(needle) }) { return 80 }
+        if aliases.contains(where: { $0.contains(needle) }) { return 78 }
         if title.contains(needle) { return 70 }
         if subtitle.contains(needle) { return 60 }
         if isSubsequence(needle, of: title) { return 40 }
