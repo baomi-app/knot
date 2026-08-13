@@ -143,6 +143,16 @@ final class SearchModel: ObservableObject {
         run(results[selectedIndex])
     }
 
+    @discardableResult
+    func acceptSelectedSuggestion() -> Bool {
+        guard results.indices.contains(selectedIndex),
+              case .setQuery = results[selectedIndex].action else {
+            return false
+        }
+        run(results[selectedIndex])
+        return true
+    }
+
     func run(_ item: SearchItem) {
         if case .setQuery = item.action {
         } else {

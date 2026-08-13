@@ -122,9 +122,7 @@ final class ClipboardMonitor {
                 sourceBundleID: sourceBundleID,
                 sourceName: sourceApplication?.localizedName
             )
-        } else if let value = pasteboard.string(forType: .string)?
-            .trimmingCharacters(in: .whitespacesAndNewlines),
-                  !value.isEmpty {
+        } else if let value = capturedText(from: pasteboard) {
             let wasPinned = entries.first(where: {
                 $0.imageData == nil && $0.value == value
             })?.isPinned ?? false
@@ -236,8 +234,21 @@ final class ClipboardMonitor {
         )
         context.flushGraphics()
         guard let png = bitmap.representation(using: .png, properties: [:]),
-              png.count <= 12 * 1_024 * 1_024 else { return nil }
+              png.count <= ClipboardEntry.maximumImageBytes else { return nil }
         return png
+    }
+
+    private func capturedText(from pasteboard: NSPasteboard) -> String? {
+        if let data = pasteboard.data(forType: .string),
+           data.count > ClipboardEntry.maximumTextBytes {
+            return nil
+        }
+        guard let rawValue = pasteboard.string(forType: .string),
+              rawValue.utf8.count <= ClipboardEntry.maximumTextBytes else {
+            return nil
+        }
+        let value = rawValue.trimmingCharacters(in: .whitespacesAndNewlines)
+        return value.isEmpty ? nil : value
     }
 
     private func sourceImage(from pasteboard: NSPasteboard) -> NSImage? {

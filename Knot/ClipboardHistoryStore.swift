@@ -4,6 +4,9 @@ import LocalAuthentication
 import Security
 
 struct ClipboardEntry: Codable, Identifiable, Hashable, Sendable {
+    static let maximumTextBytes = 1 * 1_024 * 1_024
+    static let maximumImageBytes = 12 * 1_024 * 1_024
+
     let id: UUID
     let value: String
     let imageData: Data?
@@ -32,6 +35,13 @@ struct ClipboardEntry: Codable, Identifiable, Hashable, Sendable {
 
     var isImage: Bool { imageData != nil }
 
+    var isWithinStorageLimit: Bool {
+        if let imageData {
+            return imageData.count <= Self.maximumImageBytes
+        }
+        return value.utf8.count <= Self.maximumTextBytes
+    }
+
     private enum CodingKeys: String, CodingKey {
         case id, value, imageData, copiedAt, sourceBundleID, sourceName, isPinned
     }
@@ -50,6 +60,7 @@ struct ClipboardEntry: Codable, Identifiable, Hashable, Sendable {
 
 @MainActor
 final class ClipboardHistoryStore {
+    private static let maximumHistoryFileBytes: Int64 = 128 * 1_024 * 1_024
     // v2 intentionally leaves the key created by development builds untouched.
     // Its legacy ACL can prompt after switching to a Developer ID release.
     private let keychainService = "app.baomi.knot.clipboard.v2"
@@ -58,14 +69,15 @@ final class ClipboardHistoryStore {
     private var cachedKey: SymmetricKey?
 
     func load() -> [ClipboardEntry] {
-        guard let encrypted = try? Data(contentsOf: historyURL),
+        guard historyFileIsWithinLimit,
+              let encrypted = try? Data(contentsOf: historyURL),
               let key = encryptionKey(),
               let sealedBox = try? AES.GCM.SealedBox(combined: encrypted),
               let data = try? AES.GCM.open(sealedBox, using: key),
               let entries = try? JSONDecoder().decode([ClipboardEntry].self, from: data) else {
             return []
         }
-        return entries
+        return entries.filter(\.isWithinStorageLimit)
     }
 
     func save(_ entries: [ClipboardEntry]) {
@@ -93,6 +105,15 @@ final class ClipboardHistoryStore {
         return base
             .appendingPathComponent("Knot", isDirectory: true)
             .appendingPathComponent("clipboard-history.bin")
+    }
+
+    private var historyFileIsWithinLimit: Bool {
+        guard fileManager.fileExists(atPath: historyURL.path) else { return true }
+        guard let attributes = try? fileManager.attributesOfItem(atPath: historyURL.path),
+              let size = attributes[.size] as? NSNumber else {
+            return false
+        }
+        return size.int64Value <= Self.maximumHistoryFileBytes
     }
 
     private func encryptionKey() -> SymmetricKey? {
