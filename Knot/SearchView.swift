@@ -56,6 +56,9 @@ struct SearchView: View {
                 .textFieldStyle(.plain)
                 .font(.system(size: 22, weight: .medium, design: .rounded))
                 .focused($searchIsFocused)
+                .onKeyPress(.tab) {
+                    model.acceptSelectedSuggestion() ? .handled : .ignored
+                }
 
             if model.isLoading {
                 ProgressView()

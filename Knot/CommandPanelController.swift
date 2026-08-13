@@ -4,7 +4,6 @@ import SwiftUI
 private final class CommandPanel: NSPanel {
     var onCancel: (() -> Void)?
     var onShowSettings: (() -> Void)?
-    var onAcceptSuggestion: (() -> Bool)?
 
     override var canBecomeKey: Bool { true }
     override var canBecomeMain: Bool { false }
@@ -19,10 +18,6 @@ private final class CommandPanel: NSPanel {
         ])
         if event.charactersIgnoringModifiers == ",", shortcutModifiers == .command {
             onShowSettings?()
-            return true
-        }
-        if event.keyCode == 48, shortcutModifiers.isEmpty,
-           onAcceptSuggestion?() == true {
             return true
         }
         return super.performKeyEquivalent(with: event)
@@ -49,9 +44,6 @@ final class CommandPanelController: NSObject, NSWindowDelegate {
         panel.onShowSettings = { [weak self] in
             self?.close()
             onShowSettings()
-        }
-        panel.onAcceptSuggestion = { [weak model] in
-            model?.acceptSelectedSuggestion() ?? false
         }
         panel.level = .statusBar
         panel.isFloatingPanel = true
