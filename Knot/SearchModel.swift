@@ -167,7 +167,11 @@ final class SearchModel: ObservableObject {
         case .copy(let value):
             NSPasteboard.general.clearContents()
             NSPasteboard.general.setString(value, forType: .string)
-            message = "Copied to clipboard"
+            if item.id.hasPrefix("calculator:") {
+                onRequestClose?()
+            } else {
+                message = "Copied to clipboard"
+            }
         case .pasteClipboard(let entryID):
             guard clipboardMonitor.writeToPasteboard(entryID: entryID) else {
                 message = "Clipboard item is no longer available"

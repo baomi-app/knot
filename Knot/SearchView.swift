@@ -319,6 +319,7 @@ private struct ResultRow: View {
                     .foregroundStyle(.tertiary)
                 }
                 .padding(.leading, 10)
+                .padding(.trailing, 12)
                 .frame(height: 52)
                 .frame(maxWidth: .infinity)
                 .contentShape(Rectangle())
