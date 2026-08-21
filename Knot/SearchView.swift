@@ -128,6 +128,9 @@ struct SearchView: View {
                                         isSelected: index == model.selectedIndex
                                     ) {
                                         model.selectedIndex = index
+                                    } onActivate: {
+                                        model.selectedIndex = index
+                                        model.run(item)
                                     } onPin: {
                                         model.togglePin(item)
                                     }
@@ -175,6 +178,7 @@ private struct ClipboardResultRow: View {
     let item: SearchItem
     let isSelected: Bool
     let action: () -> Void
+    let onActivate: () -> Void
     let onPin: () -> Void
 
     var body: some View {
@@ -211,6 +215,9 @@ private struct ClipboardResultRow: View {
                 .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
+            .simultaneousGesture(
+                TapGesture(count: 2).onEnded(onActivate)
+            )
 
             Button(action: onPin) {
                 Image(systemName: item.isPinned ? "pin.fill" : "pin")
@@ -310,6 +317,11 @@ private struct ResultRow: View {
                 Text(item.section.rawValue)
                     .font(.system(size: 10.5, weight: .medium))
                     .foregroundStyle(.tertiary)
+                if case .copy = item.action {
+                    Text("Copy")
+                        .font(.system(size: 10.5, weight: .semibold))
+                        .foregroundStyle(.secondary)
+                }
                 }
                 .padding(.leading, 10)
                 .frame(height: 52)

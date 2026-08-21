@@ -2,20 +2,44 @@ import Foundation
 
 enum Calculator {
     static func evaluate(_ input: String) -> String? {
-        var expression = input.trimmingCharacters(in: .whitespacesAndNewlines)
+        var expression = normalized(input.trimmingCharacters(in: .whitespacesAndNewlines))
         let explicitlyRequested = expression.hasPrefix("=")
         if explicitlyRequested {
             expression.removeFirst()
         }
 
-        let operators = CharacterSet(charactersIn: "+-*/%")
+        let operators = CharacterSet(charactersIn: "+-*/%^")
         guard explicitlyRequested || expression.dropFirst().unicodeScalars.contains(where: operators.contains) else {
             return nil
         }
 
+        expression = completedPrefix(of: expression)
+        guard !expression.isEmpty else { return nil }
+
         var parser = Parser(expression)
         guard let value = parser.parse(), value.isFinite else { return nil }
         return String(format: "%.10g", locale: Locale(identifier: "en_US_POSIX"), value)
+    }
+
+    private static func normalized(_ input: String) -> String {
+        input
+            .replacingOccurrences(of: "，", with: ",")
+            .replacingOccurrences(of: "×", with: "*")
+            .replacingOccurrences(of: "÷", with: "/")
+            .replacingOccurrences(of: "−", with: "-")
+            .replacingOccurrences(of: "–", with: "-")
+    }
+
+    private static func completedPrefix(of expression: String) -> String {
+        var result = expression.trimmingCharacters(in: .whitespacesAndNewlines)
+        let incompleteOperators = CharacterSet(charactersIn: "+-*/%^")
+        while result.count > 1,
+              let scalar = result.unicodeScalars.last,
+              incompleteOperators.contains(scalar) {
+            result.removeLast()
+            result = result.trimmingCharacters(in: .whitespacesAndNewlines)
+        }
+        return result
     }
 
     private struct Parser {
@@ -42,10 +66,10 @@ enum Calculator {
         }
 
         private mutating func parseTerm() -> Double? {
-            guard var value = parseFactor() else { return nil }
+            guard var value = parsePower() else { return nil }
             while let token = peek(), token == "*" || token == "/" || token == "%" {
                 advance()
-                guard let right = parseFactor(), right != 0 || token == "*" else { return nil }
+                guard let right = parsePower(), right != 0 || token == "*" else { return nil }
                 switch token {
                 case "*": value *= right
                 case "/": value /= right
@@ -53,6 +77,14 @@ enum Calculator {
                 }
             }
             return value
+        }
+
+        private mutating func parsePower() -> Double? {
+            guard let value = parseFactor() else { return nil }
+            guard peek() == "^" else { return value }
+            advance()
+            guard let exponent = parsePower() else { return nil }
+            return pow(value, exponent)
         }
 
         private mutating func parseFactor() -> Double? {
@@ -66,8 +98,12 @@ enum Calculator {
             }
             if peek() == "(" {
                 advance()
-                guard let value = parseExpression(), peek() == ")" else { return nil }
-                advance()
+                guard let value = parseExpression() else { return nil }
+                if peek() == ")" {
+                    advance()
+                } else if peek() != nil {
+                    return nil
+                }
                 return value
             }
             return parseNumber()
@@ -76,12 +112,33 @@ enum Calculator {
         private mutating func parseNumber() -> Double? {
             let start = index
             var foundDecimal = false
-            while let token = peek(), token.isNumber || (token == "." && !foundDecimal) {
+            while let token = peek(),
+                  token.isNumber || token == "," || (token == "." && !foundDecimal) {
                 if token == "." { foundDecimal = true }
                 advance()
             }
             guard start != index else { return nil }
-            return Double(String(characters[start..<index]))
+            let number = String(characters[start..<index])
+            guard hasValidThousandsSeparators(number) else { return nil }
+            return Double(number.replacingOccurrences(of: ",", with: ""))
+        }
+
+        private func hasValidThousandsSeparators(_ number: String) -> Bool {
+            let components = number.split(separator: ".", omittingEmptySubsequences: false)
+            guard components.count <= 2 else { return false }
+            let integer = String(components[0])
+            guard integer.contains(",") else { return true }
+
+            let groups = integer.split(separator: ",", omittingEmptySubsequences: false)
+            guard let first = groups.first,
+                  (1...3).contains(first.count),
+                  first.allSatisfy(\.isNumber),
+                  groups.dropFirst().allSatisfy({
+                      $0.count == 3 && $0.allSatisfy(\.isNumber)
+                  }) else {
+                return false
+            }
+            return true
         }
 
         private func peek() -> Character? {
@@ -93,4 +150,3 @@ enum Calculator {
         }
     }
 }
-

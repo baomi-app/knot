@@ -10,6 +10,7 @@
 		00DE5FF95F1858236836EEAC /* WindowManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C53A43B21AE8FEAEA4968C2 /* WindowManager.swift */; };
 		0AEB4E4A0E7772AB771873C9 /* ClipboardShortcutStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B22807D4E59DE5F6C24313C7 /* ClipboardShortcutStore.swift */; };
 		15FCA270672079D36FC26681 /* ClipboardSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCF960171E9E4DC983610AEC /* ClipboardSettingsView.swift */; };
+		182A733CD9371E55A99593A3 /* CalculatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 652F251160708237C23C83D0 /* CalculatorTests.swift */; };
 		1D8506831BF9303232C4E75A /* ShortcutsSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C87A8A3BE25863F4F68017DB /* ShortcutsSettingsView.swift */; };
 		1EADEDE7B3DD5602B79E8F96 /* OnboardingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 413CE3157078F66296D93771 /* OnboardingController.swift */; };
 		2AE58952D9C1645D1DA51B00 /* PopAnnotationOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78AF6F0FB0C5E11F5E79DE04 /* PopAnnotationOverlay.swift */; };
@@ -46,6 +47,7 @@
 		D2C5822B605A01402BCC8AA6 /* ClipboardSettingsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB6A8ECDF9B6678F32CD3D3A /* ClipboardSettingsStore.swift */; };
 		D3D29AA83305185B2898156C /* Calculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58779330EEC108ACE98561AF /* Calculator.swift */; };
 		D99B27A0DD88F4C14E222927 /* FileSearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12CD012BAD90C8D19349ACFC /* FileSearch.swift */; };
+		DA6291961C6DC22996D69127 /* Calculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58779330EEC108ACE98561AF /* Calculator.swift */; };
 		E0BE4ADEA44C2C3FCC9FB715 /* SearchUsageStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BE60E7A9390565E9C74A0B1 /* SearchUsageStore.swift */; };
 		E38940072D630093E55CD693 /* ShortcutRecorderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C65637806E6DFBA8FF72C2C8 /* ShortcutRecorderView.swift */; };
 		E51BA0EAE596AFA8B9E30784 /* WindowShortcutStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85E3FE3CFB6BC0B91D57AEC2 /* WindowShortcutStore.swift */; };
@@ -76,6 +78,7 @@
 		59B83C6F50D297095D5D9AEC /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
 		5B35F6D7E2F83214757D33E0 /* ClipboardHistoryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClipboardHistoryStore.swift; sourceTree = "<group>"; };
 		5E253311FFAD981CB61E5883 /* CaptureSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureSettingsView.swift; sourceTree = "<group>"; };
+		652F251160708237C23C83D0 /* CalculatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalculatorTests.swift; sourceTree = "<group>"; };
 		6CA1434A867A4E281BF9867D /* PopScreenStreamCapturer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopScreenStreamCapturer.swift; sourceTree = "<group>"; };
 		73C621DB66FC91F237698FAB /* QuicklinksSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuicklinksSettingsView.swift; sourceTree = "<group>"; };
 		78AF6F0FB0C5E11F5E79DE04 /* PopAnnotationOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopAnnotationOverlay.swift; sourceTree = "<group>"; };
@@ -102,6 +105,7 @@
 		CABD51E7A8A5AFEAE124F8B9 /* KnotBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KnotBarController.swift; sourceTree = "<group>"; };
 		CCF960171E9E4DC983610AEC /* ClipboardSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClipboardSettingsView.swift; sourceTree = "<group>"; };
 		CD306DB914F436028611FB98 /* LauncherShortcutStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LauncherShortcutStore.swift; sourceTree = "<group>"; };
+		D73DE7CD931E0844D46A2B34 /* KnotTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KnotTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		DC50CFB4F08F728BEA17D8D4 /* KnotBarSettingsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KnotBarSettingsStore.swift; sourceTree = "<group>"; };
 		E21CBCBC56DE487B640A33F3 /* PopClipboardService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopClipboardService.swift; sourceTree = "<group>"; };
 		F92B5FE9BD7008D6EB9F0237 /* ClipboardPasteCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClipboardPasteCoordinator.swift; sourceTree = "<group>"; };
@@ -114,6 +118,7 @@
 			isa = PBXGroup;
 			children = (
 				CFE159ADB4AED34FB9210A02 /* Knot */,
+				FC2EFB0CE592FE281157630A /* KnotTests */,
 				F7E46C8D3CE8BBD34B623C23 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -178,8 +183,17 @@
 			isa = PBXGroup;
 			children = (
 				842768D146B565195D8F3390 /* Knot.app */,
+				D73DE7CD931E0844D46A2B34 /* KnotTests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		FC2EFB0CE592FE281157630A /* KnotTests */ = {
+			isa = PBXGroup;
+			children = (
+				652F251160708237C23C83D0 /* CalculatorTests.swift */,
+			);
+			path = KnotTests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -203,6 +217,23 @@
 			productReference = 842768D146B565195D8F3390 /* Knot.app */;
 			productType = "com.apple.product-type.application";
 		};
+		FA502BAB5DE73278D2AAD4FD /* KnotTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D68A9AD45DAFA9DFAFC81B91 /* Build configuration list for PBXNativeTarget "KnotTests" */;
+			buildPhases = (
+				4749B5D33526541B239234F7 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = KnotTests;
+			packageProductDependencies = (
+			);
+			productName = KnotTests;
+			productReference = D73DE7CD931E0844D46A2B34 /* KnotTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -213,6 +244,9 @@
 				LastUpgradeCheck = 2600;
 				TargetAttributes = {
 					45DAD458DC1620EA1D0D1B14 = {
+						ProvisioningStyle = Automatic;
+					};
+					FA502BAB5DE73278D2AAD4FD = {
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -232,6 +266,7 @@
 			projectRoot = "";
 			targets = (
 				45DAD458DC1620EA1D0D1B14 /* Knot */,
+				FA502BAB5DE73278D2AAD4FD /* KnotTests */,
 			);
 		};
 /* End PBXProject section */
@@ -248,6 +283,15 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		4749B5D33526541B239234F7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DA6291961C6DC22996D69127 /* Calculator.swift in Sources */,
+				182A733CD9371E55A99593A3 /* CalculatorTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		CE62A06FC865DCCEF0079FE5 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -304,6 +348,21 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
+		C8AECA75D93334592A249FD9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				COMBINE_HIDPI_IMAGES = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = app.baomi.KnotTests;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
 		CAE978CF47FDADAF0A652A03 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -320,6 +379,21 @@
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = app.baomi.knot;
 				PRODUCT_NAME = Knot;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		D39E4B2445DB667387B466F0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				COMBINE_HIDPI_IMAGES = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = app.baomi.KnotTests;
 				SDKROOT = macosx;
 			};
 			name = Debug;
@@ -359,7 +433,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 11;
+				CURRENT_PROJECT_VERSION = 12;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -372,7 +446,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 0.1.6;
+				MARKETING_VERSION = 0.1.7;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -438,7 +512,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 11;
+				CURRENT_PROJECT_VERSION = 12;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -457,7 +531,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 0.1.6;
+				MARKETING_VERSION = 0.1.7;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -486,6 +560,15 @@
 			buildConfigurations = (
 				CAE978CF47FDADAF0A652A03 /* Debug */,
 				EA828B0926751B87A31D9401 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		D68A9AD45DAFA9DFAFC81B91 /* Build configuration list for PBXNativeTarget "KnotTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D39E4B2445DB667387B466F0 /* Debug */,
+				C8AECA75D93334592A249FD9 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
