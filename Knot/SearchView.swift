@@ -317,11 +317,6 @@ private struct ResultRow: View {
                 Text(item.section.rawValue)
                     .font(.system(size: 10.5, weight: .medium))
                     .foregroundStyle(.tertiary)
-                if case .copy = item.action {
-                    Text("Copy")
-                        .font(.system(size: 10.5, weight: .semibold))
-                        .foregroundStyle(.secondary)
-                }
                 }
                 .padding(.leading, 10)
                 .frame(height: 52)
