@@ -1,5 +1,11 @@
 # Third-Party Notices
 
+## Sparkle
+
+Knot uses [Sparkle 2.10.0](https://github.com/sparkle-project/Sparkle) for in-app updates.
+The [complete upstream license and bundled component notices](docs/licenses/Sparkle.txt)
+are also included in the app as `Sparkle.txt`.
+
 ## Pop
 
 Knot Capture shares its ScreenCaptureKit selection, frozen-screen capture, and

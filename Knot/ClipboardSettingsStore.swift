@@ -8,6 +8,7 @@ final class ClipboardSettingsStore: ObservableObject {
     @Published private(set) var historyLimit: Int
     @Published private(set) var retentionDays: Int
     @Published private(set) var excludedBundleIDs: Set<String>
+    private let defaults: UserDefaults
 
     private enum Key {
         static let historyLimit = "clipboardHistoryLimit"
@@ -15,27 +16,28 @@ final class ClipboardSettingsStore: ObservableObject {
         static let exclusions = "clipboardExcludedBundleIDs"
     }
 
-    private init() {
-        let savedLimit = UserDefaults.standard.integer(forKey: Key.historyLimit)
+    init(defaults: UserDefaults = .standard) {
+        self.defaults = defaults
+        let savedLimit = defaults.integer(forKey: Key.historyLimit)
         historyLimit = [25, 50, 100, 250].contains(savedLimit) ? savedLimit : 100
 
-        let savedRetention = UserDefaults.standard.object(forKey: Key.retentionDays) as? Int
+        let savedRetention = defaults.object(forKey: Key.retentionDays) as? Int
         retentionDays = savedRetention ?? 30
 
-        let savedExclusions = UserDefaults.standard.stringArray(forKey: Key.exclusions)
+        let savedExclusions = defaults.stringArray(forKey: Key.exclusions)
         excludedBundleIDs = Set(savedExclusions ?? Array(Self.defaultExclusions))
     }
 
     func setHistoryLimit(_ value: Int) {
         guard [25, 50, 100, 250].contains(value) else { return }
         historyLimit = value
-        UserDefaults.standard.set(value, forKey: Key.historyLimit)
+        defaults.set(value, forKey: Key.historyLimit)
     }
 
     func setRetentionDays(_ value: Int) {
         guard [0, 1, 7, 30, 90].contains(value) else { return }
         retentionDays = value
-        UserDefaults.standard.set(value, forKey: Key.retentionDays)
+        defaults.set(value, forKey: Key.retentionDays)
     }
 
     func addExclusion(_ bundleID: String) {
@@ -60,7 +62,7 @@ final class ClipboardSettingsStore: ObservableObject {
     }
 
     private func saveExclusions() {
-        UserDefaults.standard.set(excludedBundleIDs.sorted(), forKey: Key.exclusions)
+        defaults.set(excludedBundleIDs.sorted(), forKey: Key.exclusions)
     }
 
     private static let defaultExclusions: Set<String> = [
@@ -73,4 +75,3 @@ final class ClipboardSettingsStore: ObservableObject {
         "org.keepassxc.keepassxc"
     ]
 }
-

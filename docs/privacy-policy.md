@@ -1,6 +1,6 @@
 # Knot Privacy Policy
 
-Last updated: August 11, 2026
+Last updated: September 16, 2026
 
 Knot is designed to work locally on your Mac. Knot does not require an account, does not include advertising or analytics, and does not sell or share personal information.
 
@@ -33,6 +33,8 @@ Settings, Quicklinks, usage ranking, capture metadata, and encrypted clipboard h
 ## Network access
 
 Knot opens URLs when you run a Quicklink. The destination website receives the request under that website's own privacy policy. Knot itself does not operate a data-collection service.
+
+Update checks and downloads connect to GitHub and its download CDN. Those servers receive standard connection information, such as your IP address and HTTP request headers. You can disable automatic checks and downloads in Settings → General. Sparkle system profiling is disabled, and update requests do not include clipboard contents, screenshots, files, or search queries.
 
 ## Changes
 

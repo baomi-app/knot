@@ -7,7 +7,7 @@ import Foundation
 /// status-item length mechanism; macOS 27 uses a runtime-resolved compatibility
 /// backend because oversized status items no longer displace their neighbors.
 @MainActor
-final class KnotBarController: ObservableObject {
+final class KnotBarController: NSObject, ObservableObject, NSMenuDelegate {
     static let shared = KnotBarController()
 
     @Published private(set) var isCollapsed = false
@@ -25,13 +25,19 @@ final class KnotBarController: ObservableObject {
     private var started = false
     private var isToggling = false
     private var assessmentAssertion: AnyObject?
+    private var assessmentPolicy: KnotBarVisibilityPolicy?
+    private var assessmentGeneration = UUID()
+    private var latestRunningBundleIdentifiers = Set<String>()
+    private let settingsUpdateScheduler = KnotBarUpdateScheduler()
+    private let assessmentRefreshScheduler = KnotBarUpdateScheduler()
     private var removedCompatibilitySeparator = false
 
     var usesMacOS27Compatibility: Bool {
         ProcessInfo.processInfo.operatingSystemVersion.majorVersion >= 27
     }
 
-    private init() {
+    private override init() {
+        super.init()
         configureStatusItems()
     }
 
@@ -46,16 +52,27 @@ final class KnotBarController: ObservableObject {
             settings.$autoHideDelay,
             settings.$revealOnHover
         )
-        .sink { [weak self] _ in self?.settingsChanged() }
+        .sink { [weak self] _ in self?.scheduleSettingsUpdate() }
         .store(in: &cancellables)
 
         settings.$separatorsHidden
-            .sink { [weak self] _ in self?.updateSeparatorAppearance() }
+            .sink { [weak self] _ in self?.scheduleSettingsUpdate() }
             .store(in: &cancellables)
 
         NotificationCenter.default.publisher(for: NSApplication.didChangeScreenParametersNotification)
             .sink { [weak self] _ in self?.screenParametersChanged() }
             .store(in: &cancellables)
+
+        if usesMacOS27Compatibility {
+            // Accessory/menu-bar-only apps do not reliably emit workspace
+            // launch notifications. The running-applications KVO list does.
+            NSWorkspace.shared.publisher(for: \.runningApplications, options: [.initial, .new])
+                .receive(on: DispatchQueue.main)
+                .sink { [weak self] applications in
+                    self?.scheduleAssessmentRefresh(runningApplications: applications)
+                }
+                .store(in: &cancellables)
+        }
 
         toggleItem.isVisible = true
         if usesMacOS27Compatibility {
@@ -67,7 +84,7 @@ final class KnotBarController: ObservableObject {
             separatorItem.isVisible = true
         }
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
-            guard self?.settings.isEnabled == true else { return }
+            guard self?.started == true, self?.settings.isEnabled == true else { return }
             self?.collapse()
         }
     }
@@ -77,6 +94,9 @@ final class KnotBarController: ObservableObject {
         hoverDwellTimer?.invalidate()
         removeHoverMonitor()
         cancellables.removeAll()
+        settingsUpdateScheduler.cancel()
+        assessmentRefreshScheduler.cancel()
+        latestRunningBundleIdentifiers.removeAll()
         invalidateAssessmentAssertion()
         started = false
     }
@@ -147,7 +167,7 @@ final class KnotBarController: ObservableObject {
         if NSApp.currentEvent?.type == .rightMouseUp {
             separatorItem.menu?.popUp(
                 positioning: nil,
-                at: NSPoint(x: 0, y: sender.bounds.maxY + 4),
+                at: NSPoint(x: 0, y: sender.bounds.minY - 4),
                 in: sender
             )
         } else {
@@ -157,6 +177,8 @@ final class KnotBarController: ObservableObject {
 
     private func contextMenu() -> NSMenu {
         let menu = NSMenu()
+        menu.delegate = self
+        menu.autoenablesItems = false
         let toggle = NSMenuItem(title: "Hide / Reveal Items", action: #selector(toggleMenuAction), keyEquivalent: "")
         toggle.target = self
         menu.addItem(toggle)
@@ -168,6 +190,14 @@ final class KnotBarController: ObservableObject {
         settings.keyEquivalentModifierMask = .command
         settings.target = self
         menu.addItem(settings)
+        let updates = NSMenuItem(
+            title: "Check for Updates…",
+            action: #selector(AppUpdater.checkForUpdates(_:)),
+            keyEquivalent: ""
+        )
+        updates.target = AppUpdater.shared
+        updates.isEnabled = AppUpdater.shared.canCheckForUpdates
+        menu.addItem(updates)
         menu.addItem(.separator())
         let disable = NSMenuItem(title: "Disable Knot Bar", action: #selector(disableMenuAction), keyEquivalent: "")
         disable.target = self
@@ -179,11 +209,27 @@ final class KnotBarController: ObservableObject {
         return menu
     }
 
+    func menuWillOpen(_ menu: NSMenu) {
+        for item in menu.items where item.action == #selector(AppUpdater.checkForUpdates(_:)) {
+            item.isEnabled = AppUpdater.shared.canCheckForUpdates
+        }
+    }
+
     @objc private func toggleMenuAction() { toggle() }
-    @objc private func openKnotMenuAction() { (NSApp.delegate as? AppDelegate)?.togglePanel() }
-    @objc private func openSettingsMenuAction() { (NSApp.delegate as? AppDelegate)?.showSettings() }
+    @objc private func openKnotMenuAction() { AppDelegate.shared?.togglePanel() }
+    @objc private func openSettingsMenuAction() { AppDelegate.shared?.showSettings() }
     @objc private func disableMenuAction() { settings.setEnabled(false) }
     @objc private func quitMenuAction() { NSApp.terminate(nil) }
+
+    private func scheduleSettingsUpdate() {
+        // @Published emits in willSet. Reconcile once after all setters finish,
+        // including updates triggered together by a settings binding.
+        settingsUpdateScheduler.schedule { [weak self] in
+            guard let self, self.started else { return }
+            self.settingsChanged()
+            self.updateSeparatorAppearance()
+        }
+    }
 
     private func settingsChanged() {
         if settings.isEnabled {
@@ -205,10 +251,13 @@ final class KnotBarController: ObservableObject {
 
     private func screenParametersChanged() {
         if usesMacOS27Compatibility {
-            if isCollapsed {
-                invalidateAssessmentAssertion()
-                isCollapsed = false
-                collapseOnMacOS27()
+            if isCollapsed, let policy = assessmentPolicy {
+                // A display change is not a request to regroup items. The AX
+                // tree may still be collapsed, or contain newly launched items
+                // on the left, so keep the user's original hidden set.
+                applyAssessmentPolicy(policy.updatingRunningApplications(
+                    Set(NSWorkspace.shared.runningApplications.compactMap(\.bundleIdentifier))
+                ))
             }
             return
         }
@@ -250,7 +299,7 @@ final class KnotBarController: ObservableObject {
         }
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) { [weak self] in
-            guard let self, self.settings.isEnabled, !self.isCollapsed else { return }
+            guard let self, self.started, self.settings.isEnabled, !self.isCollapsed else { return }
             guard let boundaryX = self.toggleItem.button?.window?.frame.minX,
                   let policy = self.menuBarPolicy(boundaryX: boundaryX) else {
                 self.compatibilityMessage = "Could not read the menu bar. Try toggling Accessibility access for Knot."
@@ -265,43 +314,76 @@ final class KnotBarController: ObservableObject {
             )
 #endif
 
-            guard !policy.hidden.isEmpty else {
-                self.invalidateAssessmentAssertion()
-                self.compatibilityMessage = nil
-                self.isCollapsed = true
-                self.autoHideTimer?.invalidate()
-                self.updateButton()
-                return
-            }
-
-            let assertion = KnotBarAssessmentActivate(
-                (0...8).map(NSNumber.init(value:)),
-                Array(policy.allowed).sorted()
-            ) { [weak self] error in
-                guard let error else { return }
-                DispatchQueue.main.async {
-                    guard let self else { return }
-                    self.invalidateAssessmentAssertion()
-                    self.isCollapsed = false
-                    self.updateButton()
-                    self.compatibilityMessage = "Could not hide menu bar items: \(error.localizedDescription)"
-                }
-            }
-            guard let assertion else {
-                self.compatibilityMessage = "Knot Bar is not available on this macOS 27 build."
-                return
-            }
-
-            self.invalidateAssessmentAssertion()
-            self.assessmentAssertion = assertion as AnyObject
-            self.compatibilityMessage = nil
-            self.isCollapsed = true
-            self.autoHideTimer?.invalidate()
-            self.updateButton()
+            self.applyAssessmentPolicy(policy)
         }
     }
 
+    private func scheduleAssessmentRefresh(runningApplications: [NSRunningApplication]) {
+        // Save every emitted snapshot, even when a refresh is already queued,
+        // so rapid launches/exits apply the latest list rather than the first.
+        latestRunningBundleIdentifiers = Set(runningApplications.compactMap(\.bundleIdentifier))
+        guard isCollapsed, assessmentPolicy != nil else { return }
+        assessmentRefreshScheduler.schedule { [weak self] in
+            guard let self, self.started else { return }
+            guard self.settings.isEnabled, self.isCollapsed, let policy = self.assessmentPolicy else { return }
+            // The collapsed AX tree omits hidden groups. Keep their original
+            // classification, including across an app's exit and relaunch.
+            let refreshed = policy.updatingRunningApplications(
+                self.latestRunningBundleIdentifiers
+            )
+            guard refreshed != policy else { return }
+            self.applyAssessmentPolicy(refreshed)
+        }
+    }
+
+    private func applyAssessmentPolicy(_ policy: KnotBarVisibilityPolicy) {
+        guard !policy.hidden.isEmpty else {
+            invalidateAssessmentAssertion()
+            assessmentPolicy = policy
+            compatibilityMessage = nil
+            isCollapsed = true
+            autoHideTimer?.invalidate()
+            updateButton()
+            return
+        }
+
+        let generation = UUID()
+        assessmentGeneration = generation
+        let assertion = KnotBarAssessmentActivate(
+            (0...8).map(NSNumber.init(value:)),
+            Array(policy.allowed).sorted()
+        ) { [weak self] error in
+            guard let error else { return }
+            DispatchQueue.main.async {
+                guard let self, self.assessmentGeneration == generation else { return }
+                self.invalidateAssessmentAssertion()
+                self.isCollapsed = false
+                self.updateButton()
+                self.compatibilityMessage = "Could not hide menu bar items: \(error.localizedDescription)"
+            }
+        }
+        guard let assertion else {
+            invalidateAssessmentAssertion()
+            isCollapsed = false
+            updateButton()
+            compatibilityMessage = "Knot Bar is not available on this macOS 27 build."
+            return
+        }
+
+        if let previousAssertion = assessmentAssertion {
+            KnotBarAssessmentInvalidate(previousAssertion)
+        }
+        assessmentAssertion = assertion as AnyObject
+        assessmentPolicy = policy
+        compatibilityMessage = nil
+        isCollapsed = true
+        autoHideTimer?.invalidate()
+        updateButton()
+    }
+
     private func invalidateAssessmentAssertion() {
+        assessmentGeneration = UUID()
+        assessmentPolicy = nil
         guard let assessmentAssertion else { return }
         KnotBarAssessmentInvalidate(assessmentAssertion)
         self.assessmentAssertion = nil
@@ -311,7 +393,7 @@ final class KnotBarController: ObservableObject {
     /// are positioned to the separator's right. The MenuBarAgent repeats its
     /// tree per display; selecting the window that contains our separator
     /// keeps all comparisons in one coordinate space.
-    private func menuBarPolicy(boundaryX: CGFloat) -> (allowed: Set<String>, hidden: Set<String>)? {
+    private func menuBarPolicy(boundaryX: CGFloat) -> KnotBarVisibilityPolicy? {
         guard let agent = NSWorkspace.shared.runningApplications.first(where: {
             $0.bundleIdentifier == "com.apple.MenuBarAgent"
         }) else { return nil }
@@ -354,15 +436,11 @@ final class KnotBarController: ObservableObject {
         // The macOS 27 primitive hides at bundle granularity. If one app owns
         // items on both sides, visible wins so a mixed placement cannot make
         // the app's required control disappear.
-        var hidden = bundlesToLeft.subtracting(bundlesToRight)
-        hidden.remove(ownBundleID)
-        hidden = Set(hidden.filter { !$0.hasPrefix("com.apple.") })
-
-        var allowed = Set(NSWorkspace.shared.runningApplications.compactMap(\.bundleIdentifier))
-        allowed.subtract(hidden)
-        allowed.insert(ownBundleID)
-        allowed.insert("com.apple.systemuiserver")
-        return (allowed, hidden)
+        return KnotBarVisibilityPolicy(
+            runningBundleIdentifiers: Set(NSWorkspace.shared.runningApplications.compactMap(\.bundleIdentifier)),
+            hidden: bundlesToLeft.subtracting(bundlesToRight),
+            ownBundleIdentifier: ownBundleID
+        )
     }
 
     private func bundleIdentifier(in element: AXUIElement, agentPID: pid_t, depth: Int = 0) -> String? {

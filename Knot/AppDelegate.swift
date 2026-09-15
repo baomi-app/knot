@@ -10,6 +10,8 @@ private let clipboardHotKeySignature: OSType = 0x4B434C50 // KCLP
 
 @MainActor
 final class AppDelegate: NSObject, NSApplicationDelegate {
+    static weak var shared: AppDelegate?
+
     private let model = SearchModel()
     private let shortcutStore = WindowShortcutStore.shared
     private let launcherShortcutStore = LauncherShortcutStore.shared
@@ -31,6 +33,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private lazy var settingsWindowController = SettingsWindowController()
 
     func applicationDidFinishLaunching(_ notification: Notification) {
+        Self.shared = self
         panelController = CommandPanelController(model: model) { [weak self] in
             self?.showSettings()
         }
@@ -58,10 +61,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             }
         model.start()
         KnotBarController.shared.start()
+        AppUpdater.shared.start()
         onboardingController.showIfNeeded()
     }
 
     func applicationWillTerminate(_ notification: Notification) {
+        if Self.shared === self {
+            Self.shared = nil
+        }
         model.stop()
         KnotBarController.shared.stop()
         unregisterAllHotKeys()

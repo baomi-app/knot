@@ -27,11 +27,32 @@ final class SearchModel: ObservableObject {
     private let quicklinkStore = QuicklinkStore.shared
     private let captureHistoryStore = CaptureHistoryStore.shared
     private let usageStore = SearchUsageStore()
+    private let applicationIndex = ApplicationIndex()
+    private lazy var applicationDirectoryMonitor = ApplicationDirectoryMonitor { [weak self] in
+        self?.applicationIndex.refresh()
+    }
     private var cancellables = Set<AnyCancellable>()
     private var fileSearchTask: Task<Void, Never>?
     private var pasteTargetApplication: NSRunningApplication?
 
     init() {
+        applicationIndex.$applications
+            .map { applications in
+                applications.map { application in
+                    SearchItem(
+                        id: "app:\(application.url.path)",
+                        title: application.title,
+                        subtitle: application.url.deletingLastPathComponent().path,
+                        section: .applications,
+                        symbol: "app",
+                        aliases: application.aliases,
+                        iconURL: application.url,
+                        action: .openApplication(application.url)
+                    )
+                }
+            }
+            .assign(to: &$applications)
+        applicationIndex.$isLoading.assign(to: &$isLoading)
         quicklinkStore.$links
             .dropFirst()
             .sink { [weak self] _ in
@@ -49,12 +70,7 @@ final class SearchModel: ObservableObject {
     var results: [SearchItem] {
         let needle = query.trimmingCharacters(in: .whitespacesAndNewlines)
         if mode == .clipboard {
-            let entries = clipboardItems
-            guard !needle.isEmpty else { return entries }
-            return entries.filter {
-                $0.title.localizedCaseInsensitiveContains(needle)
-                    || $0.subtitle.localizedCaseInsensitiveContains(needle)
-            }
+            return clipboardItems(matching: needle)
         }
         if fileSearchTerm != nil {
             return Array(fileItems.prefix(16))
@@ -82,17 +98,27 @@ final class SearchModel: ObservableObject {
     }
 
     func start() {
-        clipboardMonitor.onChange = { [weak self] in self?.selectedIndex = 0 }
-        clipboardMonitor.start()
-        Task {
-            applications = await AppScanner.scan()
-            isLoading = false
+        clipboardMonitor.onChange = { [weak self] in
+            guard let self else { return }
+            selectedIndex = 0
+            if mode == .clipboard, let warning = clipboardMonitor.persistenceMessage {
+                message = warning
+            }
         }
+        clipboardMonitor.start()
+        applicationDirectoryMonitor.start()
+        applicationIndex.start()
     }
 
     func stop() {
         fileSearchTask?.cancel()
+        applicationDirectoryMonitor.stop()
+        applicationIndex.stop()
         clipboardMonitor.stop()
+    }
+
+    func refreshApplications() {
+        applicationIndex.refresh()
     }
 
     func resetQuery() {
@@ -104,7 +130,9 @@ final class SearchModel: ObservableObject {
         self.mode = mode
         query = ""
         selectedIndex = 0
-        message = mode == .clipboard ? "Search and paste from clipboard history" : nil
+        message = mode == .clipboard
+            ? clipboardMonitor.persistenceMessage ?? "Search and paste from clipboard history"
+            : nil
     }
 
     func requestClose() {
@@ -315,8 +343,8 @@ final class SearchModel: ObservableObject {
         }
     }
 
-    private var clipboardItems: [SearchItem] {
-        clipboardMonitor.entries.sorted {
+    private func clipboardItems(matching query: String) -> [SearchItem] {
+        clipboardMonitor.entries.filter { $0.matchesSearch(query) }.sorted {
             if $0.isPinned != $1.isPinned { return $0.isPinned && !$1.isPinned }
             return $0.copiedAt > $1.copiedAt
         }.map { entry in

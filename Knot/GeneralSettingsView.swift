@@ -8,42 +8,44 @@ struct GeneralSettingsView: View {
     private let refreshTimer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 22) {
-            VStack(alignment: .leading, spacing: 5) {
-                Text("General")
-                    .font(.title2.weight(.semibold))
-                Text("Knot requests system access only for features that need it.")
-                    .foregroundStyle(.secondary)
-            }
-
-            GroupBox("Permissions") {
-                VStack(spacing: 0) {
-                    permissionRow(
-                        title: "Accessibility",
-                        detail: "Window management and direct clipboard paste",
-                        symbol: "accessibility",
-                        granted: accessibilityGranted,
-                        request: { PermissionManager.requestAccessibility() },
-                        openSettings: PermissionManager.openAccessibilitySettings
-                    )
-                    Divider().padding(.leading, 42)
-                    permissionRow(
-                        title: "Screen Recording",
-                        detail: "Screenshots and on-device OCR",
-                        symbol: "rectangle.dashed.badge.record",
-                        granted: screenRecordingGranted,
-                        request: { PermissionManager.requestScreenRecording() },
-                        openSettings: PermissionManager.openScreenRecordingSettings
-                    )
+        ScrollView {
+            VStack(alignment: .leading, spacing: 20) {
+                VStack(alignment: .leading, spacing: 5) {
+                    Text("General")
+                        .font(.title2.weight(.semibold))
+                    Text("Knot requests system access only for features that need it.")
+                        .foregroundStyle(.secondary)
                 }
-                .padding(8)
+
+                GroupBox("Permissions") {
+                    VStack(spacing: 0) {
+                        permissionRow(
+                            title: "Accessibility",
+                            detail: "Window management and direct clipboard paste",
+                            symbol: "accessibility",
+                            granted: accessibilityGranted,
+                            request: { PermissionManager.requestAccessibility() },
+                            openSettings: PermissionManager.openAccessibilitySettings
+                        )
+                        Divider().padding(.leading, 42)
+                        permissionRow(
+                            title: "Screen Recording",
+                            detail: "Screenshots and on-device OCR",
+                            symbol: "rectangle.dashed.badge.record",
+                            granted: screenRecordingGranted,
+                            request: { PermissionManager.requestScreenRecording() },
+                            openSettings: PermissionManager.openScreenRecordingSettings
+                        )
+                    }
+                    .padding(8)
+                }
+
+                startupCard
+                UpdateSettingsView()
             }
-
-            startupCard
-
-            Spacer()
+            .padding(24)
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .padding(24)
         .frame(width: 650, height: 420)
         .onAppear(perform: refresh)
         .onReceive(refreshTimer) { _ in refresh() }

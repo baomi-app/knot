@@ -7,15 +7,25 @@ options:
 settings:
   base:
     SWIFT_VERSION: "6.0"
-    MARKETING_VERSION: "0.1.8"
-    CURRENT_PROJECT_VERSION: "15"
+    MARKETING_VERSION: "0.1.9"
+    CURRENT_PROJECT_VERSION: "18"
     CODE_SIGN_STYLE: Automatic
+packages:
+  Sparkle:
+    url: https://github.com/sparkle-project/Sparkle
+    exactVersion: 2.10.0
 targets:
   Knot:
     type: application
     platform: macOS
     sources:
       - path: Knot
+      - path: THIRD_PARTY_NOTICES.md
+        buildPhase: resources
+      - path: docs/licenses/Sparkle.txt
+        buildPhase: resources
+    dependencies:
+      - package: Sparkle
     info:
       path: Knot/Info.plist
       properties:
@@ -28,6 +38,13 @@ targets:
         NSHighResolutionCapable: true
         NSScreenCaptureUsageDescription: Knot uses screen capture only when you run a capture command.
         NSHumanReadableCopyright: Copyright © 2026 baomi.app. All rights reserved.
+        SUFeedURL: https://github.com/baomi-app/knot/releases/latest/download/appcast.xml
+        SUPublicEDKey: jTqyXCId+m6cJUO/vy10QZ/7JwV1q5hXZ9myy6prK8Y=
+        SUEnableAutomaticChecks: true
+        SUAutomaticallyUpdate: false
+        SUEnableSystemProfiling: false
+        SUVerifyUpdateBeforeExtraction: true
+        SURequireSignedFeed: true
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: app.baomi.knot
@@ -47,6 +64,21 @@ targets:
     sources:
       - path: KnotTests
       - path: Knot/Calculator.swift
+      - path: Knot/Quicklink.swift
+      - path: Knot/QuicklinkStore.swift
+      - path: Knot/CommandPanelKeyCommand.swift
+      - path: Knot/KnotBarVisibilityPolicy.swift
+      - path: Knot/KnotBarUpdateScheduler.swift
+      - path: Knot/UpdateConfiguration.swift
+      - path: Knot/UpdateFeedAvailability.swift
+      - path: Knot/ScannedApplication.swift
+      - path: Knot/AppScanner.swift
+      - path: Knot/ApplicationIndex.swift
+      - path: Knot/ApplicationDirectoryMonitor.swift
+      - path: Knot/ClipboardHistoryStore.swift
+      - path: Knot/ClipboardSettingsStore.swift
+      - path: Knot/ClipboardMonitor.swift
+      - path: Knot/PopClipboardService.swift
     settings:
       base:
         GENERATE_INFOPLIST_FILE: true

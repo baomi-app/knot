@@ -14,10 +14,7 @@ private final class CommandPanel: NSPanel {
     }
 
     override func performKeyEquivalent(with event: NSEvent) -> Bool {
-        let shortcutModifiers = event.modifierFlags.intersection([
-            .command, .option, .control, .shift
-        ])
-        if event.charactersIgnoringModifiers == ",", shortcutModifiers == .command {
+        if CommandPanelKeyCommand.resolve(event) == .showSettings {
             onShowSettings?()
             return true
         }
@@ -51,16 +48,17 @@ final class CommandPanelController: NSObject, NSWindowDelegate {
             model?.acceptSelectedSuggestion() ?? false
         }
         keyEventMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak panel] event in
-            let shortcutModifiers = event.modifierFlags.intersection([
-                .command, .option, .control, .shift
-            ])
-            guard event.window === panel,
-                  event.keyCode == 48,
-                  shortcutModifiers.isEmpty,
-                  panel?.onAcceptSuggestion?() == true else {
+            guard let panel, event.window === panel else { return event }
+            // Handle this before SwiftUI's application menu can open its own scene.
+            switch CommandPanelKeyCommand.resolve(event) {
+            case .showSettings:
+                panel.onShowSettings?()
+                return nil
+            case .acceptSuggestion:
+                return panel.onAcceptSuggestion?() == true ? nil : event
+            case nil:
                 return event
             }
-            return nil
         }
         panel.level = .statusBar
         panel.isFloatingPanel = true
@@ -69,7 +67,9 @@ final class CommandPanelController: NSObject, NSWindowDelegate {
         panel.backgroundColor = .clear
         panel.hasShadow = true
         panel.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary, .transient]
-        panel.contentView = NSHostingView(rootView: SearchView(model: model))
+        panel.contentView = NSHostingView(rootView: SearchView(model: model, onShowSettings: { [weak panel] in
+            panel?.onShowSettings?()
+        }))
         model.onRequestClose = { [weak self] in
             self?.close()
         }
@@ -104,6 +104,9 @@ final class CommandPanelController: NSObject, NSWindowDelegate {
         model.capturePasteTarget(NSWorkspace.shared.frontmostApplication)
         WindowManager.captureTarget()
         model.prepare(mode: mode)
+        if mode == .root {
+            model.refreshApplications()
+        }
         positionPanel()
         NSApplication.shared.activate(ignoringOtherApps: true)
         panel.makeKeyAndOrderFront(nil)

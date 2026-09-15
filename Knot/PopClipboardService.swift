@@ -12,9 +12,15 @@ enum ClipboardService {
         ClipboardMonitor.shared.recordCurrentImage(sourceName: "Knot Capture")
     }
 
-    static func copyText(_ text: String) {
-        let pb = NSPasteboard.general
+    @discardableResult
+    static func copyText(
+        _ text: String,
+        to pb: NSPasteboard = .general,
+        monitor: ClipboardMonitor? = nil
+    ) -> Bool {
         pb.clearContents()
-        pb.setString(text, forType: .string)
+        guard pb.setString(text, forType: .string) else { return false }
+        (monitor ?? ClipboardMonitor.shared).recordCurrentText(sourceName: "Knot OCR")
+        return true
     }
 }

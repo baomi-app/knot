@@ -24,22 +24,37 @@ final class QuicklinkStore: ObservableObject {
     static let shared = QuicklinkStore()
 
     @Published private(set) var links: [Quicklink] = []
-    private let fileManager = FileManager.default
+    @Published private(set) var persistenceMessage: String?
+    private let fileManager: FileManager
+    private let storageURL: URL
+    private var needsRecoveryCopy = false
+    private(set) var recoveryURL: URL?
 
-    private init() {
-        let loadedLinks = load()
-        links = loadedLinks
+    init(storageURL: URL? = nil, fileManager: FileManager = .default) {
+        self.fileManager = fileManager
+        self.storageURL = storageURL ?? Self.defaultStorageURL
+        // An existing empty configuration is a choice, not a first launch.
+        guard fileManager.fileExists(atPath: self.storageURL.path) else {
+            save(Self.defaultLinks)
+            return
+        }
+        // Do not overwrite unreadable or malformed data with defaults either.
+        guard let loadedLinks = load() else {
+            needsRecoveryCopy = true
+            persistenceMessage = "Existing Quicklinks could not be read. The original configuration has been preserved."
+            NSLog("[Knot Quicklinks] Existing configuration could not be loaded; preserving the original.")
+            return
+        }
+        let migratedLinks = loadedLinks
             .filter { !Self.isLegacyChatGPTDefault($0) }
             .map(Self.migratingLegacyDefault)
-        if links.isEmpty {
-            links = Self.defaultLinks
-        }
-        if links != loadedLinks {
-            save()
+        links = loadedLinks
+        if migratedLinks != loadedLinks {
+            save(migratedLinks)
         }
     }
 
-    func add() -> Quicklink {
+    func add() -> Quicklink? {
         var candidate = "link"
         var suffix = 2
         while links.contains(where: { $0.keyword == candidate }) {
@@ -51,32 +66,35 @@ final class QuicklinkStore: ObservableObject {
             urlTemplate: "https://example.com",
             keyword: candidate
         )
-        links.append(link)
-        save()
+        guard save(links + [link]) else { return nil }
         return link
     }
 
-    func update(id: UUID, title: String, urlTemplate: String, keyword: String) {
+    @discardableResult
+    func update(id: UUID, title: String, urlTemplate: String, keyword: String) -> Bool {
         guard isValid(
             title: title,
             urlTemplate: urlTemplate,
             keyword: keyword,
             excluding: id
-        ) else { return }
-        guard let index = links.firstIndex(where: { $0.id == id }) else { return }
-        links[index] = Quicklink(
+        ) else { return false }
+        guard let index = links.firstIndex(where: { $0.id == id }) else { return false }
+        var updatedLinks = links
+        updatedLinks[index] = Quicklink(
             id: id,
             title: title.trimmingCharacters(in: .whitespacesAndNewlines),
             urlTemplate: urlTemplate.trimmingCharacters(in: .whitespacesAndNewlines),
             keyword: keyword.trimmingCharacters(in: .whitespacesAndNewlines).localizedLowercase
         )
-        links.sort { $0.title.localizedCaseInsensitiveCompare($1.title) == .orderedAscending }
-        save()
+        updatedLinks.sort { $0.title.localizedCaseInsensitiveCompare($1.title) == .orderedAscending }
+        return save(updatedLinks)
     }
 
-    func remove(id: UUID) {
-        links.removeAll { $0.id == id }
-        save()
+    @discardableResult
+    func remove(id: UUID) -> Bool {
+        let remaining = links.filter { $0.id != id }
+        guard remaining.count != links.count else { return true }
+        return save(remaining)
     }
 
     func exportData() -> Data? {
@@ -128,9 +146,12 @@ final class QuicklinkStore: ObservableObject {
             imported += 1
         }
 
-        links.append(contentsOf: importedLinks)
-        links.sort { $0.title.localizedCaseInsensitiveCompare($1.title) == .orderedAscending }
-        if imported > 0 { save() }
+        if imported > 0 {
+            let merged = (links + importedLinks).sorted {
+                $0.title.localizedCaseInsensitiveCompare($1.title) == .orderedAscending
+            }
+            guard save(merged) else { return nil }
+        }
         return QuicklinkImportResult(imported: imported, skipped: skipped)
     }
 
@@ -175,24 +196,47 @@ final class QuicklinkStore: ObservableObject {
         return true
     }
 
-    private func load() -> [Quicklink] {
+    private func load() -> [Quicklink]? {
         guard let data = try? Data(contentsOf: storageURL),
               let links = try? JSONDecoder().decode([Quicklink].self, from: data) else {
-            return []
+            return nil
         }
         return links
     }
 
-    private func save() {
-        guard let data = try? JSONEncoder().encode(links) else { return }
-        try? fileManager.createDirectory(
-            at: storageURL.deletingLastPathComponent(),
-            withIntermediateDirectories: true
-        )
-        try? data.write(to: storageURL, options: .atomic)
+    @discardableResult
+    private func save(_ proposedLinks: [Quicklink]) -> Bool {
+        do {
+            let data = try JSONEncoder().encode(proposedLinks)
+            try fileManager.createDirectory(
+                at: storageURL.deletingLastPathComponent(),
+                withIntermediateDirectories: true
+            )
+            if needsRecoveryCopy {
+                let destination = storageURL.deletingLastPathComponent()
+                    .appendingPathComponent("quicklinks-recovery-\(UUID().uuidString).json")
+                // A failed backup must stop the write. Keep this flag set so
+                // a later retry cannot silently skip protecting the original.
+                try fileManager.copyItem(at: storageURL, to: destination)
+                recoveryURL = destination
+                needsRecoveryCopy = false
+                NSLog("[Knot Quicklinks] Preserved unreadable configuration as %@", destination.lastPathComponent)
+            }
+            try data.write(to: storageURL, options: .atomic)
+            links = proposedLinks
+            persistenceMessage = recoveryURL.map {
+                "The previous Quicklinks configuration was preserved at \($0.path)."
+            }
+            return true
+        } catch {
+            persistenceMessage = "Quicklinks could not be saved. The existing configuration has not been replaced."
+            NSLog("[Knot Quicklinks] Configuration was not saved: %@", String(describing: error))
+            return false
+        }
     }
 
-    private var storageURL: URL {
+    private static var defaultStorageURL: URL {
+        let fileManager = FileManager.default
         let base = fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask).first
             ?? fileManager.homeDirectoryForCurrentUser.appendingPathComponent("Library/Application Support")
         return base

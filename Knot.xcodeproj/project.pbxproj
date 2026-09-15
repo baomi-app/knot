@@ -8,19 +8,35 @@
 
 /* Begin PBXBuildFile section */
 		00DE5FF95F1858236836EEAC /* WindowManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C53A43B21AE8FEAEA4968C2 /* WindowManager.swift */; };
+		0515018655E7161A06217BA9 /* UpdateFeedAvailability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2531B68A380594DCECF7C3F9 /* UpdateFeedAvailability.swift */; };
+		05D52B1F725EFEADF8DC89C1 /* ApplicationIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9623752619AA10B4B9FD286 /* ApplicationIndex.swift */; };
+		0A84FCAA76A9F0F7B6EAC3AD /* ClipboardMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A89F259F3A095C99E7A9020 /* ClipboardMonitor.swift */; };
 		0AEB4E4A0E7772AB771873C9 /* ClipboardShortcutStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B22807D4E59DE5F6C24313C7 /* ClipboardShortcutStore.swift */; };
+		0F219CA9FD3561B5B033AFF2 /* ScannedApplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9193632AB2DA3F55D722B496 /* ScannedApplication.swift */; };
+		1207D08B6D18783DFF646CFB /* ApplicationIndexTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C41A9891142AA97DBC2D8CA4 /* ApplicationIndexTests.swift */; };
 		15FCA270672079D36FC26681 /* ClipboardSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCF960171E9E4DC983610AEC /* ClipboardSettingsView.swift */; };
+		16B7931121D1FC54A21BF1E6 /* ApplicationDirectoryMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9C0994D43BFC13535AB4B16 /* ApplicationDirectoryMonitor.swift */; };
 		182A733CD9371E55A99593A3 /* CalculatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 652F251160708237C23C83D0 /* CalculatorTests.swift */; };
 		1D8506831BF9303232C4E75A /* ShortcutsSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C87A8A3BE25863F4F68017DB /* ShortcutsSettingsView.swift */; };
 		1EADEDE7B3DD5602B79E8F96 /* OnboardingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 413CE3157078F66296D93771 /* OnboardingController.swift */; };
+		1F416E8F0EBCE47061F77ACB /* AppScannerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 468CE05EC6B10EF663813A00 /* AppScannerTests.swift */; };
+		213E43A966EF07CF7A0AC5B5 /* ClipboardHistoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40AF11DEDD0CC6C1466B150D /* ClipboardHistoryTests.swift */; };
+		213F4BC0E522FCCD2285DCA3 /* PopClipboardService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E21CBCBC56DE487B640A33F3 /* PopClipboardService.swift */; };
 		2AE58952D9C1645D1DA51B00 /* PopAnnotationOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78AF6F0FB0C5E11F5E79DE04 /* PopAnnotationOverlay.swift */; };
+		2AF5D2984074BCF65C9574AF /* CommandPanelKeyCommandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212DB3F4CBC280734A831EAD /* CommandPanelKeyCommandTests.swift */; };
 		2CA0E64670837C15573E586D /* CaptureManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9362788F56BED978E25AE88 /* CaptureManager.swift */; };
 		30492F83F024F47A660505BA /* KnotBarSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09680014A7BEE4898A0EF162 /* KnotBarSettingsView.swift */; };
 		32D0B0825C0D0E565BEC40C1 /* KnotBarAssessmentBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = 8FBC10A2CA4FC961675EADC1 /* KnotBarAssessmentBridge.m */; };
+		342585BB14EF6FC7E26257D2 /* UpdateSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E5E83B2839541FC6F9C8335 /* UpdateSettingsView.swift */; };
 		349B047ED7921876E83B3871 /* CaptureHistoryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BF7162678579A61D6C9B32A /* CaptureHistoryStore.swift */; };
 		3C6894D7E85636243C34E25D /* PopClipboardService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E21CBCBC56DE487B640A33F3 /* PopClipboardService.swift */; };
+		3E2EB06FFFF2B40ABA1AA9D6 /* KnotBarVisibilityPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58C52E99945A9EA60662F200 /* KnotBarVisibilityPolicy.swift */; };
+		4A8D782C2C6213823CC3C6FD /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 11251A9A87E361F45E2CAA7C /* Sparkle */; };
 		4D95FCDA8962AA13FF07AD11 /* SettingsWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 121F5F0078F8E8A0CE9288AC /* SettingsWindowController.swift */; };
+		512E90B68B9B10A1C0875079 /* CommandPanelKeyCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8469FF452E92811B8A591B9 /* CommandPanelKeyCommand.swift */; };
 		51B0D9737E049699F5BF0D94 /* PopScreenCaptureService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A38543665389D94119EC59DC /* PopScreenCaptureService.swift */; };
+		537CF09AA737BE226DB8AA12 /* ClipboardSettingsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB6A8ECDF9B6678F32CD3D3A /* ClipboardSettingsStore.swift */; };
+		55778D98B94533397E78ACCF /* ClipboardHistoryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B35F6D7E2F83214757D33E0 /* ClipboardHistoryStore.swift */; };
 		57F4D82A5D0D56751D0CEB07 /* CommandPanelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA140C6E459C626E12273C29 /* CommandPanelController.swift */; };
 		5942C45B95E9711B00A4A5A0 /* PopCompatibility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0811F2864AE7CEC639CB5147 /* PopCompatibility.swift */; };
 		5A16286F1D466B527494D4C2 /* QuicklinkStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CB4CB69EBF7F625612DC32E /* QuicklinkStore.swift */; };
@@ -29,16 +45,34 @@
 		5BAC7D4E697CF7C63BE66DFA /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59B83C6F50D297095D5D9AEC /* SearchView.swift */; };
 		6623E9E2BF440B040A44B49A /* PopRegionSelectionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DF090CBCDBD9A760225D897 /* PopRegionSelectionController.swift */; };
 		666F92885DD0670AB3954E3B /* PopImageSaver.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5899D0243CA245E22B6A56 /* PopImageSaver.swift */; };
+		675AFF8A8FADE0D7ED68A479 /* CommandPanelKeyCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8469FF452E92811B8A591B9 /* CommandPanelKeyCommand.swift */; };
+		6867050DED56786B7E0610F7 /* QuicklinkStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90236C2A15D87DEF7EB5F460 /* QuicklinkStoreTests.swift */; };
+		6DE252086535EC7B0F245CDD /* ApplicationDirectoryMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9C0994D43BFC13535AB4B16 /* ApplicationDirectoryMonitor.swift */; };
+		75CE1329B78910DB887E956E /* ApplicationIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9623752619AA10B4B9FD286 /* ApplicationIndex.swift */; };
 		760FC7F600862C17C23EF38A /* KnotBarSettingsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC50CFB4F08F728BEA17D8D4 /* KnotBarSettingsStore.swift */; };
 		7BFC96877893FEBED3750657 /* ClipboardPasteCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F92B5FE9BD7008D6EB9F0237 /* ClipboardPasteCoordinator.swift */; };
+		7C88E7D0D729A1B1EC2B35CC /* KnotBarVisibilityPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58C52E99945A9EA60662F200 /* KnotBarVisibilityPolicy.swift */; };
+		803DE46A705C477C449724DE /* AppUpdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65C48FA4A59F303C89D5B2CB /* AppUpdater.swift */; };
 		807287327F4C9CCD90DA2BD7 /* ClipboardHistoryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B35F6D7E2F83214757D33E0 /* ClipboardHistoryStore.swift */; };
 		86A6620519DD9DE4C1694164 /* SearchModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D9A39C3680995DA6A9116DF /* SearchModel.swift */; };
+		897FCD08FA92606D9EF9FAB2 /* Quicklink.swift in Sources */ = {isa = PBXBuildFile; fileRef = C508A095393498573C4946D1 /* Quicklink.swift */; };
+		8D7D8CEB9C7B17E00B22A8D7 /* Quicklink.swift in Sources */ = {isa = PBXBuildFile; fileRef = C508A095393498573C4946D1 /* Quicklink.swift */; };
 		8E9CBBA6440A2F6EBBA1EE4C /* PopAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B3A665026A06437BFB3336C /* PopAnnotation.swift */; };
 		8F511F9B8AE6D44C9A5DCD01 /* CaptureSettingsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8186BC5D6C2A22448AF2046D /* CaptureSettingsStore.swift */; };
+		91F4E156339E9D252C686B04 /* KnotBarTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C19D90088D9C462D472FCDC6 /* KnotBarTests.swift */; };
+		9791041B0643B2E9AC950E15 /* UpdateConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C299BD058655C64151D8F45B /* UpdateConfigurationTests.swift */; };
 		99748269B9989B245A1D47FD /* AppScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A9391CC81D1E4F2A8B4E930 /* AppScanner.swift */; };
+		9A74F84EB846E7648740CA5C /* THIRD_PARTY_NOTICES.md in Resources */ = {isa = PBXBuildFile; fileRef = F0453DE40CD506B752A5F42B /* THIRD_PARTY_NOTICES.md */; };
+		9D5F7DE3ADEAE50EC7FF0DBA /* UpdateConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = E64F13BDD6075E7B497A9D42 /* UpdateConfiguration.swift */; };
+		A044496F043F0EA8426BEC1E /* UpdateConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = E64F13BDD6075E7B497A9D42 /* UpdateConfiguration.swift */; };
+		A1CF10B8A00D82D8F8811331 /* Sparkle.txt in Resources */ = {isa = PBXBuildFile; fileRef = E457A4E0C900CF283BDD6DD1 /* Sparkle.txt */; };
 		A2A3A2AF1DDB14FF61040579 /* KnotBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CABD51E7A8A5AFEAE124F8B9 /* KnotBarController.swift */; };
+		AF23891196FD2015D85AE597 /* ScannedApplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9193632AB2DA3F55D722B496 /* ScannedApplication.swift */; };
+		B46C2C7F3AD92DD6EB62927A /* KnotBarUpdateScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0ACBF9B010833D1FDA07330 /* KnotBarUpdateScheduler.swift */; };
 		B77933812A71BE70076C4C10 /* CaptureSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E253311FFAD981CB61E5883 /* CaptureSettingsView.swift */; };
 		B9978186D648BBC1AB5E0D59 /* LaunchAtLoginStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 259E0789E9059BC93155D140 /* LaunchAtLoginStore.swift */; };
+		BC2DBA7F5DE98801F0E2E14D /* ApplicationDirectoryMonitorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A968BE36FDD9276285EA8D0 /* ApplicationDirectoryMonitorTests.swift */; };
+		C111C23A97F0C2ABD1653D19 /* UpdateFeedAvailabilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 402098DFEE57D9614999628A /* UpdateFeedAvailabilityTests.swift */; };
 		C7BF37B20942305326B4BC55 /* KnotSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39F8D8912FF0DBC04641C0CD /* KnotSettingsView.swift */; };
 		C8B48FD8F35A4CF0C2F42938 /* PopScreenStreamCapturer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CA1434A867A4E281BF9867D /* PopScreenStreamCapturer.swift */; };
 		C8D6840508D467C47087D8D4 /* QuicklinksSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73C621DB66FC91F237698FAB /* QuicklinksSettingsView.swift */; };
@@ -50,10 +84,14 @@
 		D99B27A0DD88F4C14E222927 /* FileSearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12CD012BAD90C8D19349ACFC /* FileSearch.swift */; };
 		DA6291961C6DC22996D69127 /* Calculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58779330EEC108ACE98561AF /* Calculator.swift */; };
 		E0BE4ADEA44C2C3FCC9FB715 /* SearchUsageStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BE60E7A9390565E9C74A0B1 /* SearchUsageStore.swift */; };
+		E32F577D809D3D7DE87D3EC1 /* QuicklinkStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CB4CB69EBF7F625612DC32E /* QuicklinkStore.swift */; };
 		E38940072D630093E55CD693 /* ShortcutRecorderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C65637806E6DFBA8FF72C2C8 /* ShortcutRecorderView.swift */; };
 		E51BA0EAE596AFA8B9E30784 /* WindowShortcutStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85E3FE3CFB6BC0B91D57AEC2 /* WindowShortcutStore.swift */; };
 		E5C6373FC0547E502E10B406 /* PermissionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D42AA663D20920CD4C4A93 /* PermissionManager.swift */; };
+		E5CA93D3606CB178B525DF56 /* KnotBarUpdateScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0ACBF9B010833D1FDA07330 /* KnotBarUpdateScheduler.swift */; };
+		EEB114ACCB5540E6C64F2566 /* AppScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A9391CC81D1E4F2A8B4E930 /* AppScanner.swift */; };
 		EF6059BCF62547A648459F7E /* KnotApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDE98E22A1AA6AC560321E1E /* KnotApp.swift */; };
+		F1A79DB5CBF7E0AE39C06178 /* UpdateFeedAvailability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2531B68A380594DCECF7C3F9 /* UpdateFeedAvailability.swift */; };
 		F41ECB5102300A34C98F0DFB /* ClipboardMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A89F259F3A095C99E7A9020 /* ClipboardMonitor.swift */; };
 		F73D8D0718777F0047B6421C /* GeneralSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B48C9BA2C7FBAB74DD1C2A06 /* GeneralSettingsView.swift */; };
 		F7C969B20D9CB373A855579E /* CaptureShortcutStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D5E5AD3F8CCB362B25333D9 /* CaptureShortcutStore.swift */; };
@@ -70,17 +108,26 @@
 		15974E46CA8D13D392F07A01 /* SearchItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchItem.swift; sourceTree = "<group>"; };
 		1B3A665026A06437BFB3336C /* PopAnnotation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopAnnotation.swift; sourceTree = "<group>"; };
 		1C53A43B21AE8FEAEA4968C2 /* WindowManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowManager.swift; sourceTree = "<group>"; };
+		212DB3F4CBC280734A831EAD /* CommandPanelKeyCommandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandPanelKeyCommandTests.swift; sourceTree = "<group>"; };
+		2531B68A380594DCECF7C3F9 /* UpdateFeedAvailability.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateFeedAvailability.swift; sourceTree = "<group>"; };
 		259E0789E9059BC93155D140 /* LaunchAtLoginStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchAtLoginStore.swift; sourceTree = "<group>"; };
 		2D9A39C3680995DA6A9116DF /* SearchModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchModel.swift; sourceTree = "<group>"; };
+		2E5E83B2839541FC6F9C8335 /* UpdateSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateSettingsView.swift; sourceTree = "<group>"; };
 		39F8D8912FF0DBC04641C0CD /* KnotSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KnotSettingsView.swift; sourceTree = "<group>"; };
+		3A968BE36FDD9276285EA8D0 /* ApplicationDirectoryMonitorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationDirectoryMonitorTests.swift; sourceTree = "<group>"; };
+		402098DFEE57D9614999628A /* UpdateFeedAvailabilityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateFeedAvailabilityTests.swift; sourceTree = "<group>"; };
+		40AF11DEDD0CC6C1466B150D /* ClipboardHistoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClipboardHistoryTests.swift; sourceTree = "<group>"; };
 		413CE3157078F66296D93771 /* OnboardingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingController.swift; sourceTree = "<group>"; };
+		468CE05EC6B10EF663813A00 /* AppScannerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppScannerTests.swift; sourceTree = "<group>"; };
 		4D5E5AD3F8CCB362B25333D9 /* CaptureShortcutStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureShortcutStore.swift; sourceTree = "<group>"; };
 		58779330EEC108ACE98561AF /* Calculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Calculator.swift; sourceTree = "<group>"; };
+		58C52E99945A9EA60662F200 /* KnotBarVisibilityPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KnotBarVisibilityPolicy.swift; sourceTree = "<group>"; };
 		59B83C6F50D297095D5D9AEC /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
 		5B35F6D7E2F83214757D33E0 /* ClipboardHistoryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClipboardHistoryStore.swift; sourceTree = "<group>"; };
 		5B5E2CAF89CABFEBAED7C88C /* Knot-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Knot-Bridging-Header.h"; sourceTree = "<group>"; };
 		5E253311FFAD981CB61E5883 /* CaptureSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureSettingsView.swift; sourceTree = "<group>"; };
 		652F251160708237C23C83D0 /* CalculatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalculatorTests.swift; sourceTree = "<group>"; };
+		65C48FA4A59F303C89D5B2CB /* AppUpdater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppUpdater.swift; sourceTree = "<group>"; };
 		6CA1434A867A4E281BF9867D /* PopScreenStreamCapturer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopScreenStreamCapturer.swift; sourceTree = "<group>"; };
 		73C621DB66FC91F237698FAB /* QuicklinksSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuicklinksSettingsView.swift; sourceTree = "<group>"; };
 		78AF6F0FB0C5E11F5E79DE04 /* PopAnnotationOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopAnnotationOverlay.swift; sourceTree = "<group>"; };
@@ -94,15 +141,23 @@
 		8A89F259F3A095C99E7A9020 /* ClipboardMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClipboardMonitor.swift; sourceTree = "<group>"; };
 		8BF7162678579A61D6C9B32A /* CaptureHistoryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureHistoryStore.swift; sourceTree = "<group>"; };
 		8FBC10A2CA4FC961675EADC1 /* KnotBarAssessmentBridge.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KnotBarAssessmentBridge.m; sourceTree = "<group>"; };
+		90236C2A15D87DEF7EB5F460 /* QuicklinkStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuicklinkStoreTests.swift; sourceTree = "<group>"; };
+		9193632AB2DA3F55D722B496 /* ScannedApplication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScannedApplication.swift; sourceTree = "<group>"; };
 		9A9391CC81D1E4F2A8B4E930 /* AppScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppScanner.swift; sourceTree = "<group>"; };
 		9BE60E7A9390565E9C74A0B1 /* SearchUsageStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchUsageStore.swift; sourceTree = "<group>"; };
 		A38543665389D94119EC59DC /* PopScreenCaptureService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopScreenCaptureService.swift; sourceTree = "<group>"; };
 		A63D81F860DB30596E9096D3 /* KnotBarAssessmentBridge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KnotBarAssessmentBridge.h; sourceTree = "<group>"; };
 		B22807D4E59DE5F6C24313C7 /* ClipboardShortcutStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClipboardShortcutStore.swift; sourceTree = "<group>"; };
 		B48C9BA2C7FBAB74DD1C2A06 /* GeneralSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralSettingsView.swift; sourceTree = "<group>"; };
+		B9623752619AA10B4B9FD286 /* ApplicationIndex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationIndex.swift; sourceTree = "<group>"; };
 		BA140C6E459C626E12273C29 /* CommandPanelController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandPanelController.swift; sourceTree = "<group>"; };
 		BB6A8ECDF9B6678F32CD3D3A /* ClipboardSettingsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClipboardSettingsStore.swift; sourceTree = "<group>"; };
+		C0ACBF9B010833D1FDA07330 /* KnotBarUpdateScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KnotBarUpdateScheduler.swift; sourceTree = "<group>"; };
+		C19D90088D9C462D472FCDC6 /* KnotBarTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KnotBarTests.swift; sourceTree = "<group>"; };
 		C1D294E05936670A06BE2714 /* PopCaptureCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopCaptureCoordinator.swift; sourceTree = "<group>"; };
+		C299BD058655C64151D8F45B /* UpdateConfigurationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateConfigurationTests.swift; sourceTree = "<group>"; };
+		C41A9891142AA97DBC2D8CA4 /* ApplicationIndexTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationIndexTests.swift; sourceTree = "<group>"; };
+		C508A095393498573C4946D1 /* Quicklink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Quicklink.swift; sourceTree = "<group>"; };
 		C65637806E6DFBA8FF72C2C8 /* ShortcutRecorderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortcutRecorderView.swift; sourceTree = "<group>"; };
 		C87A8A3BE25863F4F68017DB /* ShortcutsSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortcutsSettingsView.swift; sourceTree = "<group>"; };
 		C9362788F56BED978E25AE88 /* CaptureManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureManager.swift; sourceTree = "<group>"; };
@@ -110,19 +165,46 @@
 		CCF960171E9E4DC983610AEC /* ClipboardSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClipboardSettingsView.swift; sourceTree = "<group>"; };
 		CD306DB914F436028611FB98 /* LauncherShortcutStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LauncherShortcutStore.swift; sourceTree = "<group>"; };
 		D73DE7CD931E0844D46A2B34 /* KnotTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KnotTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		D8469FF452E92811B8A591B9 /* CommandPanelKeyCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandPanelKeyCommand.swift; sourceTree = "<group>"; };
 		DC50CFB4F08F728BEA17D8D4 /* KnotBarSettingsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KnotBarSettingsStore.swift; sourceTree = "<group>"; };
 		E21CBCBC56DE487B640A33F3 /* PopClipboardService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopClipboardService.swift; sourceTree = "<group>"; };
+		E457A4E0C900CF283BDD6DD1 /* Sparkle.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = Sparkle.txt; sourceTree = "<group>"; };
+		E64F13BDD6075E7B497A9D42 /* UpdateConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateConfiguration.swift; sourceTree = "<group>"; };
+		E9C0994D43BFC13535AB4B16 /* ApplicationDirectoryMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationDirectoryMonitor.swift; sourceTree = "<group>"; };
+		F0453DE40CD506B752A5F42B /* THIRD_PARTY_NOTICES.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = THIRD_PARTY_NOTICES.md; sourceTree = "<group>"; };
 		F92B5FE9BD7008D6EB9F0237 /* ClipboardPasteCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClipboardPasteCoordinator.swift; sourceTree = "<group>"; };
 		FA5899D0243CA245E22B6A56 /* PopImageSaver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopImageSaver.swift; sourceTree = "<group>"; };
 		FDE98E22A1AA6AC560321E1E /* KnotApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KnotApp.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
+/* Begin PBXFrameworksBuildPhase section */
+		544E748129BA10AA36F56048 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4A8D782C2C6213823CC3C6FD /* Sparkle in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
 /* Begin PBXGroup section */
+		1EE290707850A2C0A8690E2E /* licenses */ = {
+			isa = PBXGroup;
+			children = (
+				E457A4E0C900CF283BDD6DD1 /* Sparkle.txt */,
+			);
+			name = licenses;
+			path = docs/licenses;
+			sourceTree = "<group>";
+		};
 		7E5240D625C6A27DAE2C5B64 = {
 			isa = PBXGroup;
 			children = (
+				F0453DE40CD506B752A5F42B /* THIRD_PARTY_NOTICES.md */,
 				CFE159ADB4AED34FB9210A02 /* Knot */,
 				FC2EFB0CE592FE281157630A /* KnotTests */,
+				1EE290707850A2C0A8690E2E /* licenses */,
 				F7E46C8D3CE8BBD34B623C23 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -131,7 +213,10 @@
 			isa = PBXGroup;
 			children = (
 				7BD2AEF4526295D8F9FE27C4 /* AppDelegate.swift */,
+				E9C0994D43BFC13535AB4B16 /* ApplicationDirectoryMonitor.swift */,
+				B9623752619AA10B4B9FD286 /* ApplicationIndex.swift */,
 				9A9391CC81D1E4F2A8B4E930 /* AppScanner.swift */,
+				65C48FA4A59F303C89D5B2CB /* AppUpdater.swift */,
 				846837B7D88236014E47F119 /* Assets.xcassets */,
 				58779330EEC108ACE98561AF /* Calculator.swift */,
 				8BF7162678579A61D6C9B32A /* CaptureHistoryStore.swift */,
@@ -146,6 +231,7 @@
 				CCF960171E9E4DC983610AEC /* ClipboardSettingsView.swift */,
 				B22807D4E59DE5F6C24313C7 /* ClipboardShortcutStore.swift */,
 				BA140C6E459C626E12273C29 /* CommandPanelController.swift */,
+				D8469FF452E92811B8A591B9 /* CommandPanelKeyCommand.swift */,
 				12CD012BAD90C8D19349ACFC /* FileSearch.swift */,
 				B48C9BA2C7FBAB74DD1C2A06 /* GeneralSettingsView.swift */,
 				82D8C028DEC10B2C02A3FB2A /* Info.plist */,
@@ -157,6 +243,8 @@
 				CABD51E7A8A5AFEAE124F8B9 /* KnotBarController.swift */,
 				DC50CFB4F08F728BEA17D8D4 /* KnotBarSettingsStore.swift */,
 				09680014A7BEE4898A0EF162 /* KnotBarSettingsView.swift */,
+				C0ACBF9B010833D1FDA07330 /* KnotBarUpdateScheduler.swift */,
+				58C52E99945A9EA60662F200 /* KnotBarVisibilityPolicy.swift */,
 				39F8D8912FF0DBC04641C0CD /* KnotSettingsView.swift */,
 				259E0789E9059BC93155D140 /* LaunchAtLoginStore.swift */,
 				CD306DB914F436028611FB98 /* LauncherShortcutStore.swift */,
@@ -171,8 +259,10 @@
 				0DF090CBCDBD9A760225D897 /* PopRegionSelectionController.swift */,
 				A38543665389D94119EC59DC /* PopScreenCaptureService.swift */,
 				6CA1434A867A4E281BF9867D /* PopScreenStreamCapturer.swift */,
+				C508A095393498573C4946D1 /* Quicklink.swift */,
 				73C621DB66FC91F237698FAB /* QuicklinksSettingsView.swift */,
 				0CB4CB69EBF7F625612DC32E /* QuicklinkStore.swift */,
+				9193632AB2DA3F55D722B496 /* ScannedApplication.swift */,
 				15974E46CA8D13D392F07A01 /* SearchItem.swift */,
 				2D9A39C3680995DA6A9116DF /* SearchModel.swift */,
 				9BE60E7A9390565E9C74A0B1 /* SearchUsageStore.swift */,
@@ -180,6 +270,9 @@
 				121F5F0078F8E8A0CE9288AC /* SettingsWindowController.swift */,
 				C65637806E6DFBA8FF72C2C8 /* ShortcutRecorderView.swift */,
 				C87A8A3BE25863F4F68017DB /* ShortcutsSettingsView.swift */,
+				E64F13BDD6075E7B497A9D42 /* UpdateConfiguration.swift */,
+				2531B68A380594DCECF7C3F9 /* UpdateFeedAvailability.swift */,
+				2E5E83B2839541FC6F9C8335 /* UpdateSettingsView.swift */,
 				1C53A43B21AE8FEAEA4968C2 /* WindowManager.swift */,
 				85E3FE3CFB6BC0B91D57AEC2 /* WindowShortcutStore.swift */,
 			);
@@ -198,7 +291,16 @@
 		FC2EFB0CE592FE281157630A /* KnotTests */ = {
 			isa = PBXGroup;
 			children = (
+				3A968BE36FDD9276285EA8D0 /* ApplicationDirectoryMonitorTests.swift */,
+				C41A9891142AA97DBC2D8CA4 /* ApplicationIndexTests.swift */,
+				468CE05EC6B10EF663813A00 /* AppScannerTests.swift */,
 				652F251160708237C23C83D0 /* CalculatorTests.swift */,
+				40AF11DEDD0CC6C1466B150D /* ClipboardHistoryTests.swift */,
+				212DB3F4CBC280734A831EAD /* CommandPanelKeyCommandTests.swift */,
+				C19D90088D9C462D472FCDC6 /* KnotBarTests.swift */,
+				90236C2A15D87DEF7EB5F460 /* QuicklinkStoreTests.swift */,
+				C299BD058655C64151D8F45B /* UpdateConfigurationTests.swift */,
+				402098DFEE57D9614999628A /* UpdateFeedAvailabilityTests.swift */,
 			);
 			path = KnotTests;
 			sourceTree = "<group>";
@@ -212,6 +314,7 @@
 			buildPhases = (
 				CE62A06FC865DCCEF0079FE5 /* Sources */,
 				3ADA82AA7453A90ABA0CF94E /* Resources */,
+				544E748129BA10AA36F56048 /* Frameworks */,
 			);
 			buildRules = (
 			);
@@ -219,6 +322,7 @@
 			);
 			name = Knot;
 			packageProductDependencies = (
+				11251A9A87E361F45E2CAA7C /* Sparkle */,
 			);
 			productName = Knot;
 			productReference = 842768D146B565195D8F3390 /* Knot.app */;
@@ -267,6 +371,9 @@
 			);
 			mainGroup = 7E5240D625C6A27DAE2C5B64;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				0872C292B041C48661BC5546 /* XCRemoteSwiftPackageReference "Sparkle" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = F7E46C8D3CE8BBD34B623C23 /* Products */;
 			projectDirPath = "";
@@ -284,6 +391,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				CD8CB8DD05E33ED75CFD2D14 /* Assets.xcassets in Resources */,
+				A1CF10B8A00D82D8F8811331 /* Sparkle.txt in Resources */,
+				9A74F84EB846E7648740CA5C /* THIRD_PARTY_NOTICES.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -294,8 +403,32 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EEB114ACCB5540E6C64F2566 /* AppScanner.swift in Sources */,
+				1F416E8F0EBCE47061F77ACB /* AppScannerTests.swift in Sources */,
+				16B7931121D1FC54A21BF1E6 /* ApplicationDirectoryMonitor.swift in Sources */,
+				BC2DBA7F5DE98801F0E2E14D /* ApplicationDirectoryMonitorTests.swift in Sources */,
+				05D52B1F725EFEADF8DC89C1 /* ApplicationIndex.swift in Sources */,
+				1207D08B6D18783DFF646CFB /* ApplicationIndexTests.swift in Sources */,
 				DA6291961C6DC22996D69127 /* Calculator.swift in Sources */,
 				182A733CD9371E55A99593A3 /* CalculatorTests.swift in Sources */,
+				55778D98B94533397E78ACCF /* ClipboardHistoryStore.swift in Sources */,
+				213E43A966EF07CF7A0AC5B5 /* ClipboardHistoryTests.swift in Sources */,
+				0A84FCAA76A9F0F7B6EAC3AD /* ClipboardMonitor.swift in Sources */,
+				537CF09AA737BE226DB8AA12 /* ClipboardSettingsStore.swift in Sources */,
+				512E90B68B9B10A1C0875079 /* CommandPanelKeyCommand.swift in Sources */,
+				2AF5D2984074BCF65C9574AF /* CommandPanelKeyCommandTests.swift in Sources */,
+				91F4E156339E9D252C686B04 /* KnotBarTests.swift in Sources */,
+				B46C2C7F3AD92DD6EB62927A /* KnotBarUpdateScheduler.swift in Sources */,
+				3E2EB06FFFF2B40ABA1AA9D6 /* KnotBarVisibilityPolicy.swift in Sources */,
+				213F4BC0E522FCCD2285DCA3 /* PopClipboardService.swift in Sources */,
+				8D7D8CEB9C7B17E00B22A8D7 /* Quicklink.swift in Sources */,
+				E32F577D809D3D7DE87D3EC1 /* QuicklinkStore.swift in Sources */,
+				6867050DED56786B7E0610F7 /* QuicklinkStoreTests.swift in Sources */,
+				0F219CA9FD3561B5B033AFF2 /* ScannedApplication.swift in Sources */,
+				9D5F7DE3ADEAE50EC7FF0DBA /* UpdateConfiguration.swift in Sources */,
+				9791041B0643B2E9AC950E15 /* UpdateConfigurationTests.swift in Sources */,
+				0515018655E7161A06217BA9 /* UpdateFeedAvailability.swift in Sources */,
+				C111C23A97F0C2ABD1653D19 /* UpdateFeedAvailabilityTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -305,6 +438,9 @@
 			files = (
 				5B4A318751138CFFEB559E29 /* AppDelegate.swift in Sources */,
 				99748269B9989B245A1D47FD /* AppScanner.swift in Sources */,
+				803DE46A705C477C449724DE /* AppUpdater.swift in Sources */,
+				6DE252086535EC7B0F245CDD /* ApplicationDirectoryMonitor.swift in Sources */,
+				75CE1329B78910DB887E956E /* ApplicationIndex.swift in Sources */,
 				D3D29AA83305185B2898156C /* Calculator.swift in Sources */,
 				349B047ED7921876E83B3871 /* CaptureHistoryStore.swift in Sources */,
 				2CA0E64670837C15573E586D /* CaptureManager.swift in Sources */,
@@ -318,6 +454,7 @@
 				15FCA270672079D36FC26681 /* ClipboardSettingsView.swift in Sources */,
 				0AEB4E4A0E7772AB771873C9 /* ClipboardShortcutStore.swift in Sources */,
 				57F4D82A5D0D56751D0CEB07 /* CommandPanelController.swift in Sources */,
+				675AFF8A8FADE0D7ED68A479 /* CommandPanelKeyCommand.swift in Sources */,
 				D99B27A0DD88F4C14E222927 /* FileSearch.swift in Sources */,
 				F73D8D0718777F0047B6421C /* GeneralSettingsView.swift in Sources */,
 				EF6059BCF62547A648459F7E /* KnotApp.swift in Sources */,
@@ -325,6 +462,8 @@
 				A2A3A2AF1DDB14FF61040579 /* KnotBarController.swift in Sources */,
 				760FC7F600862C17C23EF38A /* KnotBarSettingsStore.swift in Sources */,
 				30492F83F024F47A660505BA /* KnotBarSettingsView.swift in Sources */,
+				E5CA93D3606CB178B525DF56 /* KnotBarUpdateScheduler.swift in Sources */,
+				7C88E7D0D729A1B1EC2B35CC /* KnotBarVisibilityPolicy.swift in Sources */,
 				C7BF37B20942305326B4BC55 /* KnotSettingsView.swift in Sources */,
 				B9978186D648BBC1AB5E0D59 /* LaunchAtLoginStore.swift in Sources */,
 				5B814F7AE89B045539D03615 /* LauncherShortcutStore.swift in Sources */,
@@ -339,8 +478,10 @@
 				6623E9E2BF440B040A44B49A /* PopRegionSelectionController.swift in Sources */,
 				51B0D9737E049699F5BF0D94 /* PopScreenCaptureService.swift in Sources */,
 				C8B48FD8F35A4CF0C2F42938 /* PopScreenStreamCapturer.swift in Sources */,
+				897FCD08FA92606D9EF9FAB2 /* Quicklink.swift in Sources */,
 				5A16286F1D466B527494D4C2 /* QuicklinkStore.swift in Sources */,
 				C8D6840508D467C47087D8D4 /* QuicklinksSettingsView.swift in Sources */,
+				AF23891196FD2015D85AE597 /* ScannedApplication.swift in Sources */,
 				D28206326636B48C18183291 /* SearchItem.swift in Sources */,
 				86A6620519DD9DE4C1694164 /* SearchModel.swift in Sources */,
 				E0BE4ADEA44C2C3FCC9FB715 /* SearchUsageStore.swift in Sources */,
@@ -348,6 +489,9 @@
 				4D95FCDA8962AA13FF07AD11 /* SettingsWindowController.swift in Sources */,
 				E38940072D630093E55CD693 /* ShortcutRecorderView.swift in Sources */,
 				1D8506831BF9303232C4E75A /* ShortcutsSettingsView.swift in Sources */,
+				A044496F043F0EA8426BEC1E /* UpdateConfiguration.swift in Sources */,
+				F1A79DB5CBF7E0AE39C06178 /* UpdateFeedAvailability.swift in Sources */,
+				342585BB14EF6FC7E26257D2 /* UpdateSettingsView.swift in Sources */,
 				00DE5FF95F1858236836EEAC /* WindowManager.swift in Sources */,
 				E51BA0EAE596AFA8B9E30784 /* WindowShortcutStore.swift in Sources */,
 			);
@@ -444,7 +588,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 15;
+				CURRENT_PROJECT_VERSION = 18;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -457,7 +601,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 0.1.8;
+				MARKETING_VERSION = 0.1.9;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -524,7 +668,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 15;
+				CURRENT_PROJECT_VERSION = 18;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -543,7 +687,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 0.1.8;
+				MARKETING_VERSION = 0.1.9;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -586,6 +730,25 @@
 			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		0872C292B041C48661BC5546 /* XCRemoteSwiftPackageReference "Sparkle" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sparkle-project/Sparkle";
+			requirement = {
+				kind = exactVersion;
+				version = 2.10.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		11251A9A87E361F45E2CAA7C /* Sparkle */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 0872C292B041C48661BC5546 /* XCRemoteSwiftPackageReference "Sparkle" */;
+			productName = Sparkle;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = F878334F70D73C6F409DAF22 /* Project object */;
 }

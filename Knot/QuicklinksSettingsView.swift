@@ -18,12 +18,14 @@ struct QuicklinksSettingsView: View {
         }
         .frame(width: 680, height: 410)
         .overlay(alignment: .bottomTrailing) {
-            if let transferMessage {
-                Text(transferMessage)
+            if let message = store.persistenceMessage ?? transferMessage {
+                Text(message)
                     .font(.caption)
                     .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
                     .padding(.horizontal, 12)
-                    .frame(height: 34)
+                    .padding(.vertical, 9)
+                    .frame(maxWidth: 400, alignment: .leading)
                     .background(.regularMaterial)
                     .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
                     .padding(12)
@@ -56,7 +58,9 @@ struct QuicklinksSettingsView: View {
 
             HStack(spacing: 8) {
                 Button {
-                    selection = store.add().id
+                    if let link = store.add() {
+                        selection = link.id
+                    }
                 } label: {
                     Image(systemName: "plus")
                 }
@@ -64,8 +68,9 @@ struct QuicklinksSettingsView: View {
 
                 Button {
                     guard let selection else { return }
-                    store.remove(id: selection)
-                    self.selection = store.links.first?.id
+                    if store.remove(id: selection) {
+                        self.selection = store.links.first?.id
+                    }
                 } label: {
                     Image(systemName: "minus")
                 }
@@ -160,7 +165,8 @@ struct QuicklinksSettingsView: View {
         guard let url = panel.url,
               let data = try? Data(contentsOf: url),
               let result = store.importData(data) else {
-            transferMessage = "The selected file is not a valid Knot Quicklinks export."
+            transferMessage = store.persistenceMessage
+                ?? "The selected file is not a valid Knot Quicklinks export."
             return
         }
         transferMessage = result.message

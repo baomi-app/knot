@@ -83,8 +83,7 @@ enum CaptureManager {
             guard let text = try? await recognizeText(at: temporaryURL), !text.isEmpty else {
                 return .noText
             }
-            NSPasteboard.general.clearContents()
-            NSPasteboard.general.setString(text, forType: .string)
+            guard ClipboardService.copyText(text) else { return .failed }
             return .copiedText(text.count)
         }
     }

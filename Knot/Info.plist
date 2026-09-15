@@ -30,5 +30,19 @@
 	<string>Copyright © 2026 baomi.app. All rights reserved.</string>
 	<key>NSScreenCaptureUsageDescription</key>
 	<string>Knot uses screen capture only when you run a capture command.</string>
+	<key>SUAutomaticallyUpdate</key>
+	<false/>
+	<key>SUEnableAutomaticChecks</key>
+	<true/>
+	<key>SUEnableSystemProfiling</key>
+	<false/>
+	<key>SUFeedURL</key>
+	<string>https://github.com/baomi-app/knot/releases/latest/download/appcast.xml</string>
+	<key>SUPublicEDKey</key>
+	<string>jTqyXCId+m6cJUO/vy10QZ/7JwV1q5hXZ9myy6prK8Y=</string>
+	<key>SURequireSignedFeed</key>
+	<true/>
+	<key>SUVerifyUpdateBeforeExtraction</key>
+	<true/>
 </dict>
 </plist>
