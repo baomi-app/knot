@@ -45,6 +45,16 @@ struct KnotBarSettingsView: View {
             .font(.callout)
             .foregroundStyle(.secondary)
 
+            if let message = controller.compatibilityMessage {
+                Label(message, systemImage: "exclamationmark.triangle")
+                    .font(.callout)
+                    .foregroundStyle(.orange)
+            } else if controller.usesMacOS27Compatibility {
+                Text("Uses the macOS 27 compatibility mode. System status items stay visible.")
+                    .font(.caption)
+                    .foregroundStyle(.tertiary)
+            }
+
             Spacer()
         }
         .padding(24)

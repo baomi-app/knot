@@ -7,8 +7,8 @@ options:
 settings:
   base:
     SWIFT_VERSION: "6.0"
-    MARKETING_VERSION: "0.1.7"
-    CURRENT_PROJECT_VERSION: "14"
+    MARKETING_VERSION: "0.1.8"
+    CURRENT_PROJECT_VERSION: "15"
     CODE_SIGN_STYLE: Automatic
 targets:
   Knot:
@@ -32,6 +32,7 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: app.baomi.knot
         PRODUCT_NAME: Knot
+        SWIFT_OBJC_BRIDGING_HEADER: Knot/Knot-Bridging-Header.h
         GENERATE_INFOPLIST_FILE: false
         ENABLE_HARDENED_RUNTIME: true
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
@@ -46,3 +47,6 @@ targets:
     sources:
       - path: KnotTests
       - path: Knot/Calculator.swift
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: true

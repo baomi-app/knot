@@ -16,6 +16,7 @@
 		2AE58952D9C1645D1DA51B00 /* PopAnnotationOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78AF6F0FB0C5E11F5E79DE04 /* PopAnnotationOverlay.swift */; };
 		2CA0E64670837C15573E586D /* CaptureManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9362788F56BED978E25AE88 /* CaptureManager.swift */; };
 		30492F83F024F47A660505BA /* KnotBarSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09680014A7BEE4898A0EF162 /* KnotBarSettingsView.swift */; };
+		32D0B0825C0D0E565BEC40C1 /* KnotBarAssessmentBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = 8FBC10A2CA4FC961675EADC1 /* KnotBarAssessmentBridge.m */; };
 		349B047ED7921876E83B3871 /* CaptureHistoryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BF7162678579A61D6C9B32A /* CaptureHistoryStore.swift */; };
 		3C6894D7E85636243C34E25D /* PopClipboardService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E21CBCBC56DE487B640A33F3 /* PopClipboardService.swift */; };
 		4D95FCDA8962AA13FF07AD11 /* SettingsWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 121F5F0078F8E8A0CE9288AC /* SettingsWindowController.swift */; };
@@ -77,6 +78,7 @@
 		58779330EEC108ACE98561AF /* Calculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Calculator.swift; sourceTree = "<group>"; };
 		59B83C6F50D297095D5D9AEC /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
 		5B35F6D7E2F83214757D33E0 /* ClipboardHistoryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClipboardHistoryStore.swift; sourceTree = "<group>"; };
+		5B5E2CAF89CABFEBAED7C88C /* Knot-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Knot-Bridging-Header.h"; sourceTree = "<group>"; };
 		5E253311FFAD981CB61E5883 /* CaptureSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureSettingsView.swift; sourceTree = "<group>"; };
 		652F251160708237C23C83D0 /* CalculatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalculatorTests.swift; sourceTree = "<group>"; };
 		6CA1434A867A4E281BF9867D /* PopScreenStreamCapturer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopScreenStreamCapturer.swift; sourceTree = "<group>"; };
@@ -91,9 +93,11 @@
 		89D42AA663D20920CD4C4A93 /* PermissionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionManager.swift; sourceTree = "<group>"; };
 		8A89F259F3A095C99E7A9020 /* ClipboardMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClipboardMonitor.swift; sourceTree = "<group>"; };
 		8BF7162678579A61D6C9B32A /* CaptureHistoryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureHistoryStore.swift; sourceTree = "<group>"; };
+		8FBC10A2CA4FC961675EADC1 /* KnotBarAssessmentBridge.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KnotBarAssessmentBridge.m; sourceTree = "<group>"; };
 		9A9391CC81D1E4F2A8B4E930 /* AppScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppScanner.swift; sourceTree = "<group>"; };
 		9BE60E7A9390565E9C74A0B1 /* SearchUsageStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchUsageStore.swift; sourceTree = "<group>"; };
 		A38543665389D94119EC59DC /* PopScreenCaptureService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopScreenCaptureService.swift; sourceTree = "<group>"; };
+		A63D81F860DB30596E9096D3 /* KnotBarAssessmentBridge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KnotBarAssessmentBridge.h; sourceTree = "<group>"; };
 		B22807D4E59DE5F6C24313C7 /* ClipboardShortcutStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClipboardShortcutStore.swift; sourceTree = "<group>"; };
 		B48C9BA2C7FBAB74DD1C2A06 /* GeneralSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralSettingsView.swift; sourceTree = "<group>"; };
 		BA140C6E459C626E12273C29 /* CommandPanelController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandPanelController.swift; sourceTree = "<group>"; };
@@ -145,8 +149,11 @@
 				12CD012BAD90C8D19349ACFC /* FileSearch.swift */,
 				B48C9BA2C7FBAB74DD1C2A06 /* GeneralSettingsView.swift */,
 				82D8C028DEC10B2C02A3FB2A /* Info.plist */,
+				5B5E2CAF89CABFEBAED7C88C /* Knot-Bridging-Header.h */,
 				02978CA31C43A88F5065E75D /* Knot.entitlements */,
 				FDE98E22A1AA6AC560321E1E /* KnotApp.swift */,
+				A63D81F860DB30596E9096D3 /* KnotBarAssessmentBridge.h */,
+				8FBC10A2CA4FC961675EADC1 /* KnotBarAssessmentBridge.m */,
 				CABD51E7A8A5AFEAE124F8B9 /* KnotBarController.swift */,
 				DC50CFB4F08F728BEA17D8D4 /* KnotBarSettingsStore.swift */,
 				09680014A7BEE4898A0EF162 /* KnotBarSettingsView.swift */,
@@ -314,6 +321,7 @@
 				D99B27A0DD88F4C14E222927 /* FileSearch.swift in Sources */,
 				F73D8D0718777F0047B6421C /* GeneralSettingsView.swift in Sources */,
 				EF6059BCF62547A648459F7E /* KnotApp.swift in Sources */,
+				32D0B0825C0D0E565BEC40C1 /* KnotBarAssessmentBridge.m in Sources */,
 				A2A3A2AF1DDB14FF61040579 /* KnotBarController.swift in Sources */,
 				760FC7F600862C17C23EF38A /* KnotBarSettingsStore.swift in Sources */,
 				30492F83F024F47A660505BA /* KnotBarSettingsView.swift in Sources */,
@@ -353,6 +361,7 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -380,6 +389,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = app.baomi.knot;
 				PRODUCT_NAME = Knot;
 				SDKROOT = macosx;
+				SWIFT_OBJC_BRIDGING_HEADER = "Knot/Knot-Bridging-Header.h";
 			};
 			name = Debug;
 		};
@@ -388,6 +398,7 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -433,7 +444,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 14;
+				CURRENT_PROJECT_VERSION = 15;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -446,7 +457,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 0.1.7;
+				MARKETING_VERSION = 0.1.8;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -474,6 +485,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = app.baomi.knot;
 				PRODUCT_NAME = Knot;
 				SDKROOT = macosx;
+				SWIFT_OBJC_BRIDGING_HEADER = "Knot/Knot-Bridging-Header.h";
 			};
 			name = Release;
 		};
@@ -512,7 +524,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 14;
+				CURRENT_PROJECT_VERSION = 15;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -531,7 +543,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 0.1.7;
+				MARKETING_VERSION = 0.1.8;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
