@@ -1,4 +1,6 @@
 .build/
+# Shared schemes are generated from project.yml by XcodeGen.
+Knot.xcodeproj/xcshareddata/xcschemes/
 dist/
 *.xcuserstate
 xcuserdata/

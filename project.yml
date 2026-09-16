@@ -14,6 +14,16 @@ packages:
   Sparkle:
     url: https://github.com/sparkle-project/Sparkle
     exactVersion: 2.10.0
+schemes:
+  Knot:
+    build:
+      targets:
+        Knot: all
+        KnotTests: [test]
+    test:
+      targets:
+        - KnotTests
+      gatherCoverageData: true
 targets:
   Knot:
     type: application

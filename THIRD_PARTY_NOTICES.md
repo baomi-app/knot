@@ -1,5 +1,8 @@
 # Third-Party Notices
 
+Knot's own source code is licensed under the [MIT license](LICENSE), copyright
+© 2026 baomi.app. The components below retain their respective notices and licenses.
+
 ## Sparkle
 
 Knot uses [Sparkle 2.10.0](https://github.com/sparkle-project/Sparkle) for in-app updates.
@@ -11,7 +14,8 @@ are also included in the app as `Sparkle.txt`.
 Knot Capture shares its ScreenCaptureKit selection, frozen-screen capture, and
 in-place annotation implementation with the sibling baomi-app project Pop.
 The imported source is kept in the `Knot/Pop*.swift` files so future fixes can
-be synchronized deliberately.
+be synchronized deliberately. This shared implementation is included in Knot's
+MIT-licensed source with authorization from its rights holder.
 
 ## Hidden Bar
 
