@@ -28,6 +28,8 @@ final class CommandPanelController: NSObject, NSWindowDelegate {
     private let panel: CommandPanel
     private var keyEventMonitor: Any?
 
+    var isVisible: Bool { panel.isVisible }
+
     init(model: SearchModel, onShowSettings: @escaping () -> Void) {
         self.model = model
         panel = CommandPanel(
@@ -96,13 +98,24 @@ final class CommandPanelController: NSObject, NSWindowDelegate {
         }
     }
 
+    func showWindowFailure(action: WindowAction, message: String) {
+        if !panel.isVisible {
+            // The shortcut already captured its target. Keep it when opening
+            // feedback so a retry cannot accidentally select Knot's panel.
+            show(captureWindowTarget: false)
+        }
+        model.message = "\(action.rawValue): \(message)"
+    }
+
     func windowDidResignKey(_ notification: Notification) {
         close()
     }
 
-    private func show(mode: SearchMode = .root) {
+    private func show(mode: SearchMode = .root, captureWindowTarget: Bool = true) {
         model.capturePasteTarget(NSWorkspace.shared.frontmostApplication)
-        WindowManager.captureTarget()
+        if captureWindowTarget {
+            WindowManager.captureTarget()
+        }
         model.prepare(mode: mode)
         if mode == .root {
             model.refreshApplications()

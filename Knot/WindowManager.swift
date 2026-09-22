@@ -95,22 +95,23 @@ enum WindowGeometry {
 
 @MainActor
 enum WindowManager {
-    private static var targetWindow: AXUIElement?
+    private static let targetResolver = WindowTargetResolver(access: AccessibilityAccess())
 
     static func captureTarget() {
-        guard isTrusted(prompt: false) else {
-            targetWindow = nil
-            return
-        }
-        targetWindow = focusedWindow()
+        targetResolver.capture(
+            applicationPID: NSWorkspace.shared.frontmostApplication?.processIdentifier,
+            canReadWindows: isTrusted(prompt: false)
+        )
     }
 
     static func perform(_ action: WindowAction) -> WindowManagerResult {
         guard isTrusted(prompt: true) else { return .permissionRequired }
-        guard let window = targetWindow,
-              let currentFrame = frame(of: window) else {
+        guard let resolved = targetResolver.resolve() else {
+            NSLog("[Knot Window] Could not resolve the captured application's window")
             return .noFocusedWindow
         }
+        let window = resolved.window
+        let currentFrame = resolved.frame
         guard let visibleFrame = visibleFrame(containing: currentFrame) else {
             return .unsupported
         }
@@ -132,50 +133,71 @@ enum WindowManager {
         )
     }
 
-    private static func focusedWindow() -> AXUIElement? {
-        let system = AXUIElementCreateSystemWide()
-        var applicationValue: CFTypeRef?
-        guard AXUIElementCopyAttributeValue(
-            system,
-            kAXFocusedApplicationAttribute as CFString,
-            &applicationValue
-        ) == .success,
-              let applicationValue,
-              CFGetTypeID(applicationValue) == AXUIElementGetTypeID() else {
-            return nil
+    private struct AccessibilityAccess: WindowTargetAccess {
+        func window(for applicationPID: pid_t, attribute: WindowTargetAttribute) -> AXUIElement? {
+            let application = AXUIElementCreateApplication(applicationPID)
+            AXUIElementSetMessagingTimeout(application, 0.5)
+            let name = attribute == .focused ? kAXFocusedWindowAttribute : kAXMainWindowAttribute
+            return WindowManager.elementAttribute(name, of: application)
         }
 
-        let application = unsafeDowncast(applicationValue, to: AXUIElement.self)
-        var windowValue: CFTypeRef?
-        guard AXUIElementCopyAttributeValue(
-            application,
-            kAXFocusedWindowAttribute as CFString,
-            &windowValue
-        ) == .success,
-              let windowValue,
-              CFGetTypeID(windowValue) == AXUIElementGetTypeID() else {
+        func systemFocusedWindow() -> AXUIElement? {
+            WindowManager.systemFocusedWindow()
+        }
+
+        func processIdentifier(of window: AXUIElement) -> pid_t? {
+            var pid: pid_t = 0
+            guard AXUIElementGetPid(window, &pid) == .success else { return nil }
+            return pid
+        }
+
+        func frame(of window: AXUIElement) -> CGRect? {
+            WindowManager.frame(of: window)
+        }
+    }
+
+    private static func systemFocusedWindow() -> AXUIElement? {
+        let system = AXUIElementCreateSystemWide()
+        AXUIElementSetMessagingTimeout(system, 0.5)
+        guard let application = elementAttribute(kAXFocusedApplicationAttribute, of: system) else {
             return nil
         }
-        return unsafeDowncast(windowValue, to: AXUIElement.self)
+        return elementAttribute(kAXFocusedWindowAttribute, of: application)
+    }
+
+    private static func elementAttribute(_ name: String, of element: AXUIElement) -> AXUIElement? {
+        var value: CFTypeRef?
+        let status = AXUIElementCopyAttributeValue(element, name as CFString, &value)
+        guard status == .success, let value,
+              CFGetTypeID(value) == AXUIElementGetTypeID() else {
+            NSLog("[Knot Window] %@ lookup failed (AX status %d)", name, status.rawValue)
+            return nil
+        }
+        let result = unsafeDowncast(value, to: AXUIElement.self)
+        AXUIElementSetMessagingTimeout(result, 0.5)
+        return result
     }
 
     private static func frame(of window: AXUIElement) -> CGRect? {
         var positionValue: CFTypeRef?
         var sizeValue: CFTypeRef?
-        guard AXUIElementCopyAttributeValue(
+        let positionStatus = AXUIElementCopyAttributeValue(
             window,
             kAXPositionAttribute as CFString,
             &positionValue
-        ) == .success,
-              AXUIElementCopyAttributeValue(
-                window,
-                kAXSizeAttribute as CFString,
-                &sizeValue
-              ) == .success,
+        )
+        let sizeStatus = AXUIElementCopyAttributeValue(
+            window,
+            kAXSizeAttribute as CFString,
+            &sizeValue
+        )
+        guard positionStatus == .success, sizeStatus == .success,
               let positionValue,
               let sizeValue,
               CFGetTypeID(positionValue) == AXValueGetTypeID(),
               CFGetTypeID(sizeValue) == AXValueGetTypeID() else {
+            NSLog("[Knot Window] Could not read window frame (position %d, size %d)",
+                  positionStatus.rawValue, sizeStatus.rawValue)
             return nil
         }
 
@@ -206,6 +228,10 @@ enum WindowManager {
             kAXSizeAttribute as CFString,
             sizeValue
         )
+        if positionResult != .success || sizeResult != .success {
+            NSLog("[Knot Window] Could not set window frame (position %d, size %d)",
+                  positionResult.rawValue, sizeResult.rawValue)
+        }
         return positionResult == .success && sizeResult == .success
     }
 

@@ -7,8 +7,8 @@ options:
 settings:
   base:
     SWIFT_VERSION: "6.0"
-    MARKETING_VERSION: "0.1.9"
-    CURRENT_PROJECT_VERSION: "18"
+    MARKETING_VERSION: "0.1.10"
+    CURRENT_PROJECT_VERSION: "19"
     CODE_SIGN_STYLE: Automatic
 packages:
   Sparkle:
@@ -89,6 +89,8 @@ targets:
       - path: Knot/ClipboardSettingsStore.swift
       - path: Knot/ClipboardMonitor.swift
       - path: Knot/PopClipboardService.swift
+      - path: Knot/WindowManager.swift
+      - path: Knot/WindowTargetResolver.swift
     settings:
       base:
         GENERATE_INFOPLIST_FILE: true

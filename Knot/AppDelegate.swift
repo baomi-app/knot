@@ -166,6 +166,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             if status == noErr, let reference {
                 windowHotKeyRefs.append(reference)
                 windowActionsByID[id] = shortcut.action
+            } else {
+                NSLog(
+                    "[Knot Shortcuts] Could not register %@ shortcut (key code %u, modifiers %u, status %d)",
+                    shortcut.action.rawValue,
+                    shortcut.keyCode,
+                    shortcut.modifiers,
+                    status
+                )
             }
         }
     }
@@ -244,6 +252,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     private func handleWindowHotKey(id: UInt32) {
         guard let action = windowActionsByID[id] else { return }
-        _ = WindowManager.performCurrent(action)
+        let result = panelController?.isVisible == true
+            ? WindowManager.perform(action)
+            : WindowManager.performCurrent(action)
+        if case .success = result { return }
+
+        NSLog("[Knot Windows] %@ failed: %@", action.rawValue, result.message)
+        panelController?.showWindowFailure(action: action, message: result.message)
     }
 }
