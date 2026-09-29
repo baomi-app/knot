@@ -28,8 +28,15 @@ final class KnotBarController: NSObject, ObservableObject, NSMenuDelegate {
     private var assessmentPolicy: KnotBarVisibilityPolicy?
     private var assessmentGeneration = UUID()
     private var latestRunningBundleIdentifiers = Set<String>()
+    private var latestRunningProcessIdentifiers = Set<pid_t>()
     private let settingsUpdateScheduler = KnotBarUpdateScheduler()
     private let assessmentRefreshScheduler = KnotBarUpdateScheduler()
+    private let menuBarReader = KnotBarMenuBarReader()
+    private lazy var menuBarMonitor = KnotBarMenuBarMonitor(
+        timing: .init(),
+        read: { [weak self] in await self?.readMenuBar() },
+        onRead: { [weak self] snapshot in self?.didReadMenuBar(snapshot) }
+    )
     private var removedCompatibilitySeparator = false
 
     var usesMacOS27Compatibility: Bool {
@@ -72,6 +79,11 @@ final class KnotBarController: NSObject, ObservableObject, NSMenuDelegate {
                     self?.scheduleAssessmentRefresh(runningApplications: applications)
                 }
                 .store(in: &cancellables)
+
+            NSWorkspace.shared.notificationCenter.publisher(for: NSWorkspace.didWakeNotification)
+                .receive(on: DispatchQueue.main)
+                .sink { [weak self] _ in self?.menuBarMonitor.layoutMayHaveChanged() }
+                .store(in: &cancellables)
         }
 
         toggleItem.isVisible = true
@@ -97,6 +109,7 @@ final class KnotBarController: NSObject, ObservableObject, NSMenuDelegate {
         settingsUpdateScheduler.cancel()
         assessmentRefreshScheduler.cancel()
         latestRunningBundleIdentifiers.removeAll()
+        latestRunningProcessIdentifiers.removeAll()
         invalidateAssessmentAssertion()
         started = false
     }
@@ -109,7 +122,7 @@ final class KnotBarController: NSObject, ObservableObject, NSMenuDelegate {
         }
         guard !isToggling else { return }
         isToggling = true
-        isCollapsed ? reveal() : collapse()
+        (isCollapsed || menuBarMonitor.isRunning) ? reveal() : collapse()
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
             self?.isToggling = false
         }
@@ -129,7 +142,7 @@ final class KnotBarController: NSObject, ObservableObject, NSMenuDelegate {
     }
 
     func reveal() {
-        guard isCollapsed else { return }
+        guard isCollapsed || menuBarMonitor.isRunning else { return }
         invalidateAssessmentAssertion()
         if !usesMacOS27Compatibility {
             separatorItem.length = expandedSeparatorLength
@@ -252,13 +265,13 @@ final class KnotBarController: NSObject, ObservableObject, NSMenuDelegate {
     private func screenParametersChanged() {
         if usesMacOS27Compatibility {
             if isCollapsed, let policy = assessmentPolicy {
-                // A display change is not a request to regroup items. The AX
-                // tree may still be collapsed, or contain newly launched items
-                // on the left, so keep the user's original hidden set.
+                // Keep the original hidden set while the display layout settles.
+                // The menu-bar monitor will pick up newly positioned items.
                 applyAssessmentPolicy(policy.updatingRunningApplications(
                     Set(NSWorkspace.shared.runningApplications.compactMap(\.bundleIdentifier))
                 ))
             }
+            menuBarMonitor.layoutMayHaveChanged()
             return
         }
         let wasCollapsed = isCollapsed
@@ -298,30 +311,18 @@ final class KnotBarController: NSObject, ObservableObject, NSMenuDelegate {
             return
         }
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) { [weak self] in
-            guard let self, self.started, self.settings.isEnabled, !self.isCollapsed else { return }
-            guard let boundaryX = self.toggleItem.button?.window?.frame.minX,
-                  let policy = self.menuBarPolicy(boundaryX: boundaryX) else {
-                self.compatibilityMessage = "Could not read the menu bar. Try toggling Accessibility access for Knot."
-                return
-            }
-#if DEBUG
-            NSLog(
-                "[Knot Bar] boundary %.1f; hidden: %@; allowed bundles: %@",
-                boundaryX,
-                policy.hidden.sorted().joined(separator: ", "),
-                policy.allowed.sorted().joined(separator: ", ")
-            )
-#endif
-
-            self.applyAssessmentPolicy(policy)
-        }
+        menuBarMonitor.start()
     }
 
     private func scheduleAssessmentRefresh(runningApplications: [NSRunningApplication]) {
         // Save every emitted snapshot, even when a refresh is already queued,
         // so rapid launches/exits apply the latest list rather than the first.
         latestRunningBundleIdentifiers = Set(runningApplications.compactMap(\.bundleIdentifier))
+        let processIdentifiers = Set(runningApplications.map(\.processIdentifier))
+        if processIdentifiers != latestRunningProcessIdentifiers {
+            latestRunningProcessIdentifiers = processIdentifiers
+            menuBarMonitor.layoutMayHaveChanged()
+        }
         guard isCollapsed, assessmentPolicy != nil else { return }
         assessmentRefreshScheduler.schedule { [weak self] in
             guard let self, self.started else { return }
@@ -338,7 +339,7 @@ final class KnotBarController: NSObject, ObservableObject, NSMenuDelegate {
 
     private func applyAssessmentPolicy(_ policy: KnotBarVisibilityPolicy) {
         guard !policy.hidden.isEmpty else {
-            invalidateAssessmentAssertion()
+            releaseAssessmentAssertion()
             assessmentPolicy = policy
             compatibilityMessage = nil
             isCollapsed = true
@@ -381,105 +382,58 @@ final class KnotBarController: NSObject, ObservableObject, NSMenuDelegate {
         updateButton()
     }
 
-    private func invalidateAssessmentAssertion() {
-        assessmentGeneration = UUID()
-        assessmentPolicy = nil
-        guard let assessmentAssertion else { return }
-        KnotBarAssessmentInvalidate(assessmentAssertion)
-        self.assessmentAssertion = nil
+    private func readMenuBar() async -> KnotBarVisibilityPolicy? {
+        guard let request = menuBarReadRequest() else { return nil }
+        return await menuBarReader.read(request)
     }
 
-    /// Returns third-party bundle identifiers whose macOS 27 menu-bar groups
-    /// are positioned to the separator's right. The MenuBarAgent repeats its
-    /// tree per display; selecting the window that contains our separator
-    /// keeps all comparisons in one coordinate space.
-    private func menuBarPolicy(boundaryX: CGFloat) -> KnotBarVisibilityPolicy? {
-        guard let agent = NSWorkspace.shared.runningApplications.first(where: {
-            $0.bundleIdentifier == "com.apple.MenuBarAgent"
-        }) else { return nil }
-
-        let agentElement = AXUIElementCreateApplication(agent.processIdentifier)
-        AXUIElementSetMessagingTimeout(agentElement, 0.4)
-        let windows = axChildren(of: agentElement).filter { axRole(of: $0) == "AXWindow" }
-        let ownBundleID = Bundle.main.bundleIdentifier ?? "app.baomi.knot"
-
-        var bestGroups: [AXUIElement]?
-        var bestDistance = CGFloat.greatestFiniteMagnitude
-        for window in windows {
-            let groups = axChildren(of: window)
-            for group in groups where bundleIdentifier(in: group, agentPID: agent.processIdentifier) == ownBundleID {
-                guard let frame = axFrame(of: group) else { continue }
-                let distance = abs(frame.minX - boundaryX)
-                if distance < bestDistance {
-                    bestDistance = distance
-                    bestGroups = groups
-                }
-            }
+    private func menuBarReadRequest() -> KnotBarMenuBarReadRequest? {
+        guard started, settings.isEnabled,
+              let boundaryX = toggleItem.button?.window?.frame.minX else { return nil }
+        let applications = NSWorkspace.shared.runningApplications
+        guard let agent = applications.first(where: { $0.bundleIdentifier == "com.apple.MenuBarAgent" }) else {
+            return nil
         }
-        guard bestDistance < 80, let groups = bestGroups else { return nil }
-
-        var bundlesToLeft = Set<String>()
-        var bundlesToRight = Set<String>()
-        for group in groups {
-            guard let frame = axFrame(of: group) else { continue }
-            if frame.minX < boundaryX - 1 {
-                if let bundleID = bundleIdentifier(in: group, agentPID: agent.processIdentifier) {
-                    bundlesToLeft.insert(bundleID)
-                }
-            } else if frame.minX > boundaryX + 1 {
-                if let bundleID = bundleIdentifier(in: group, agentPID: agent.processIdentifier) {
-                    bundlesToRight.insert(bundleID)
-                }
-            }
-        }
-
-        // The macOS 27 primitive hides at bundle granularity. If one app owns
-        // items on both sides, visible wins so a mixed placement cannot make
-        // the app's required control disappear.
-        return KnotBarVisibilityPolicy(
-            runningBundleIdentifiers: Set(NSWorkspace.shared.runningApplications.compactMap(\.bundleIdentifier)),
-            hidden: bundlesToLeft.subtracting(bundlesToRight),
-            ownBundleIdentifier: ownBundleID
+        let bundles = Dictionary(uniqueKeysWithValues: applications.compactMap { application in
+            application.bundleIdentifier.map { (application.processIdentifier, $0) }
+        })
+        return KnotBarMenuBarReadRequest(
+            agentPID: agent.processIdentifier,
+            bundleIdentifiersByPID: bundles,
+            ownBundleIdentifier: Bundle.main.bundleIdentifier ?? "app.baomi.knot",
+            boundaryX: boundaryX
         )
     }
 
-    private func bundleIdentifier(in element: AXUIElement, agentPID: pid_t, depth: Int = 0) -> String? {
-        guard depth <= 3 else { return nil }
-        var pid: pid_t = 0
-        AXUIElementGetPid(element, &pid)
-        if pid > 0, pid != agentPID,
-           let bundleID = NSRunningApplication(processIdentifier: pid)?.bundleIdentifier {
-            return bundleID
-        }
-        for child in axChildren(of: element) {
-            if let bundleID = bundleIdentifier(in: child, agentPID: agentPID, depth: depth + 1) {
-                return bundleID
+    private func didReadMenuBar(_ snapshot: KnotBarVisibilityPolicy?) {
+        guard started, settings.isEnabled, menuBarMonitor.isRunning else { return }
+        guard let snapshot else {
+            if !isCollapsed {
+                menuBarMonitor.stop()
+                compatibilityMessage = "Could not read the menu bar. Try toggling Accessibility access for Knot."
             }
+            return
         }
-        return nil
+        let running = Set(NSWorkspace.shared.runningApplications.compactMap(\.bundleIdentifier))
+        let refreshed = (assessmentPolicy ?? snapshot).updatingRunningApplications(
+            running,
+            newlyHidden: snapshot.hidden
+        )
+        guard refreshed != assessmentPolicy else { return }
+        applyAssessmentPolicy(refreshed)
     }
 
-    private func axChildren(of element: AXUIElement) -> [AXUIElement] {
-        var value: CFTypeRef?
-        guard AXUIElementCopyAttributeValue(element, kAXChildrenAttribute as CFString, &value) == .success else {
-            return []
-        }
-        return value as? [AXUIElement] ?? []
+    private func invalidateAssessmentAssertion() {
+        menuBarMonitor.stop()
+        assessmentPolicy = nil
+        releaseAssessmentAssertion()
     }
 
-    private func axRole(of element: AXUIElement) -> String {
-        var value: CFTypeRef?
-        AXUIElementCopyAttributeValue(element, kAXRoleAttribute as CFString, &value)
-        return value as? String ?? ""
-    }
-
-    private func axFrame(of element: AXUIElement) -> CGRect? {
-        var value: CFTypeRef?
-        guard AXUIElementCopyAttributeValue(element, "AXFrame" as CFString, &value) == .success,
-              let value, CFGetTypeID(value) == AXValueGetTypeID() else { return nil }
-        var frame = CGRect.zero
-        guard AXValueGetValue(value as! AXValue, .cgRect, &frame) else { return nil }
-        return frame
+    private func releaseAssessmentAssertion() {
+        assessmentGeneration = UUID()
+        guard let assessmentAssertion else { return }
+        KnotBarAssessmentInvalidate(assessmentAssertion)
+        self.assessmentAssertion = nil
     }
 
     private func separatorImage() -> NSImage {

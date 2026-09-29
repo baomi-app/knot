@@ -79,6 +79,8 @@ targets:
       - path: Knot/CommandPanelKeyCommand.swift
       - path: Knot/KnotBarVisibilityPolicy.swift
       - path: Knot/KnotBarUpdateScheduler.swift
+      - path: Knot/KnotBarMenuBarMonitor.swift
+      - path: Knot/KnotBarMenuBarReader.swift
       - path: Knot/UpdateConfiguration.swift
       - path: Knot/UpdateFeedAvailability.swift
       - path: Knot/ScannedApplication.swift

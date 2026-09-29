@@ -17,11 +17,13 @@
 		15FCA270672079D36FC26681 /* ClipboardSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCF960171E9E4DC983610AEC /* ClipboardSettingsView.swift */; };
 		16B7931121D1FC54A21BF1E6 /* ApplicationDirectoryMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9C0994D43BFC13535AB4B16 /* ApplicationDirectoryMonitor.swift */; };
 		182A733CD9371E55A99593A3 /* CalculatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 652F251160708237C23C83D0 /* CalculatorTests.swift */; };
+		1C799476380BD3592882FBD1 /* KnotBarMenuBarMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B31776571A205991081191A8 /* KnotBarMenuBarMonitor.swift */; };
 		1D8506831BF9303232C4E75A /* ShortcutsSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C87A8A3BE25863F4F68017DB /* ShortcutsSettingsView.swift */; };
 		1EADEDE7B3DD5602B79E8F96 /* OnboardingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 413CE3157078F66296D93771 /* OnboardingController.swift */; };
 		1F416E8F0EBCE47061F77ACB /* AppScannerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 468CE05EC6B10EF663813A00 /* AppScannerTests.swift */; };
 		213E43A966EF07CF7A0AC5B5 /* ClipboardHistoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40AF11DEDD0CC6C1466B150D /* ClipboardHistoryTests.swift */; };
 		213F4BC0E522FCCD2285DCA3 /* PopClipboardService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E21CBCBC56DE487B640A33F3 /* PopClipboardService.swift */; };
+		22D17F3E92A91B8D1E8FB0B3 /* KnotBarMenuBarMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B31776571A205991081191A8 /* KnotBarMenuBarMonitor.swift */; };
 		2AE58952D9C1645D1DA51B00 /* PopAnnotationOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78AF6F0FB0C5E11F5E79DE04 /* PopAnnotationOverlay.swift */; };
 		2AF5D2984074BCF65C9574AF /* CommandPanelKeyCommandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212DB3F4CBC280734A831EAD /* CommandPanelKeyCommandTests.swift */; };
 		2CA0E64670837C15573E586D /* CaptureManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9362788F56BED978E25AE88 /* CaptureManager.swift */; };
@@ -56,6 +58,7 @@
 		7C88E7D0D729A1B1EC2B35CC /* KnotBarVisibilityPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58C52E99945A9EA60662F200 /* KnotBarVisibilityPolicy.swift */; };
 		803DE46A705C477C449724DE /* AppUpdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65C48FA4A59F303C89D5B2CB /* AppUpdater.swift */; };
 		807287327F4C9CCD90DA2BD7 /* ClipboardHistoryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B35F6D7E2F83214757D33E0 /* ClipboardHistoryStore.swift */; };
+		812DBE907BCA9407503E56F1 /* KnotBarMenuBarReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = A87841138AEB2732742FC6C0 /* KnotBarMenuBarReader.swift */; };
 		86A6620519DD9DE4C1694164 /* SearchModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D9A39C3680995DA6A9116DF /* SearchModel.swift */; };
 		897FCD08FA92606D9EF9FAB2 /* Quicklink.swift in Sources */ = {isa = PBXBuildFile; fileRef = C508A095393498573C4946D1 /* Quicklink.swift */; };
 		8D7D8CEB9C7B17E00B22A8D7 /* Quicklink.swift in Sources */ = {isa = PBXBuildFile; fileRef = C508A095393498573C4946D1 /* Quicklink.swift */; };
@@ -70,6 +73,7 @@
 		A044496F043F0EA8426BEC1E /* UpdateConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = E64F13BDD6075E7B497A9D42 /* UpdateConfiguration.swift */; };
 		A1CF10B8A00D82D8F8811331 /* Sparkle.txt in Resources */ = {isa = PBXBuildFile; fileRef = E457A4E0C900CF283BDD6DD1 /* Sparkle.txt */; };
 		A2A3A2AF1DDB14FF61040579 /* KnotBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CABD51E7A8A5AFEAE124F8B9 /* KnotBarController.swift */; };
+		A9D319A24D10915151EEF5FD /* KnotBarMenuBarReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = A87841138AEB2732742FC6C0 /* KnotBarMenuBarReader.swift */; };
 		AF23891196FD2015D85AE597 /* ScannedApplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9193632AB2DA3F55D722B496 /* ScannedApplication.swift */; };
 		B46C2C7F3AD92DD6EB62927A /* KnotBarUpdateScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0ACBF9B010833D1FDA07330 /* KnotBarUpdateScheduler.swift */; };
 		B77933812A71BE70076C4C10 /* CaptureSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E253311FFAD981CB61E5883 /* CaptureSettingsView.swift */; };
@@ -151,7 +155,9 @@
 		9BE60E7A9390565E9C74A0B1 /* SearchUsageStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchUsageStore.swift; sourceTree = "<group>"; };
 		A38543665389D94119EC59DC /* PopScreenCaptureService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopScreenCaptureService.swift; sourceTree = "<group>"; };
 		A63D81F860DB30596E9096D3 /* KnotBarAssessmentBridge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KnotBarAssessmentBridge.h; sourceTree = "<group>"; };
+		A87841138AEB2732742FC6C0 /* KnotBarMenuBarReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KnotBarMenuBarReader.swift; sourceTree = "<group>"; };
 		B22807D4E59DE5F6C24313C7 /* ClipboardShortcutStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClipboardShortcutStore.swift; sourceTree = "<group>"; };
+		B31776571A205991081191A8 /* KnotBarMenuBarMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KnotBarMenuBarMonitor.swift; sourceTree = "<group>"; };
 		B48C9BA2C7FBAB74DD1C2A06 /* GeneralSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralSettingsView.swift; sourceTree = "<group>"; };
 		B9623752619AA10B4B9FD286 /* ApplicationIndex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationIndex.swift; sourceTree = "<group>"; };
 		BA140C6E459C626E12273C29 /* CommandPanelController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandPanelController.swift; sourceTree = "<group>"; };
@@ -247,6 +253,8 @@
 				A63D81F860DB30596E9096D3 /* KnotBarAssessmentBridge.h */,
 				8FBC10A2CA4FC961675EADC1 /* KnotBarAssessmentBridge.m */,
 				CABD51E7A8A5AFEAE124F8B9 /* KnotBarController.swift */,
+				B31776571A205991081191A8 /* KnotBarMenuBarMonitor.swift */,
+				A87841138AEB2732742FC6C0 /* KnotBarMenuBarReader.swift */,
 				DC50CFB4F08F728BEA17D8D4 /* KnotBarSettingsStore.swift */,
 				09680014A7BEE4898A0EF162 /* KnotBarSettingsView.swift */,
 				C0ACBF9B010833D1FDA07330 /* KnotBarUpdateScheduler.swift */,
@@ -425,6 +433,8 @@
 				537CF09AA737BE226DB8AA12 /* ClipboardSettingsStore.swift in Sources */,
 				512E90B68B9B10A1C0875079 /* CommandPanelKeyCommand.swift in Sources */,
 				2AF5D2984074BCF65C9574AF /* CommandPanelKeyCommandTests.swift in Sources */,
+				1C799476380BD3592882FBD1 /* KnotBarMenuBarMonitor.swift in Sources */,
+				A9D319A24D10915151EEF5FD /* KnotBarMenuBarReader.swift in Sources */,
 				91F4E156339E9D252C686B04 /* KnotBarTests.swift in Sources */,
 				B46C2C7F3AD92DD6EB62927A /* KnotBarUpdateScheduler.swift in Sources */,
 				3E2EB06FFFF2B40ABA1AA9D6 /* KnotBarVisibilityPolicy.swift in Sources */,
@@ -471,6 +481,8 @@
 				EF6059BCF62547A648459F7E /* KnotApp.swift in Sources */,
 				32D0B0825C0D0E565BEC40C1 /* KnotBarAssessmentBridge.m in Sources */,
 				A2A3A2AF1DDB14FF61040579 /* KnotBarController.swift in Sources */,
+				22D17F3E92A91B8D1E8FB0B3 /* KnotBarMenuBarMonitor.swift in Sources */,
+				812DBE907BCA9407503E56F1 /* KnotBarMenuBarReader.swift in Sources */,
 				760FC7F600862C17C23EF38A /* KnotBarSettingsStore.swift in Sources */,
 				30492F83F024F47A660505BA /* KnotBarSettingsView.swift in Sources */,
 				E5CA93D3606CB178B525DF56 /* KnotBarUpdateScheduler.swift in Sources */,

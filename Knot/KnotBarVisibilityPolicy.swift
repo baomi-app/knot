@@ -1,6 +1,6 @@
 import Foundation
 
-struct KnotBarVisibilityPolicy: Equatable {
+struct KnotBarVisibilityPolicy: Equatable, Sendable {
     let allowed: Set<String>
     let hidden: Set<String>
     private let ownBundleIdentifier: String
@@ -14,10 +14,15 @@ struct KnotBarVisibilityPolicy: Equatable {
             .union([ownBundleIdentifier, "com.apple.systemuiserver"])
     }
 
-    func updatingRunningApplications(_ bundleIdentifiers: Set<String>) -> Self {
+    func updatingRunningApplications(
+        _ bundleIdentifiers: Set<String>,
+        newlyHidden: Set<String> = []
+    ) -> Self {
         Self(
             runningBundleIdentifiers: bundleIdentifiers,
-            hidden: hidden,
+            // Hidden groups disappear from the collapsed accessibility tree.
+            // Merge newly observed items without forgetting earlier placement.
+            hidden: hidden.union(newlyHidden),
             ownBundleIdentifier: ownBundleIdentifier
         )
     }
