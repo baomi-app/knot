@@ -12,25 +12,27 @@ final class LauncherShortcutStore: ObservableObject {
     static let shared = LauncherShortcutStore()
 
     @Published private(set) var shortcut: LauncherShortcut
+    private let defaults: UserDefaults
     private let defaultsKey = "launcherShortcut"
 
-    private init() {
-        if let data = UserDefaults.standard.data(forKey: defaultsKey),
+    init(
+        defaults: UserDefaults = .standard,
+        isAvailable: (UInt32, UInt32) -> Bool = GlobalHotKeyAvailability.canRegister
+    ) {
+        self.defaults = defaults
+        if let data = defaults.data(forKey: defaultsKey),
            let saved = try? JSONDecoder().decode(LauncherShortcut.self, from: data),
-           saved.modifiers != 0,
-           GlobalHotKeyAvailability.canRegister(
-               keyCode: saved.keyCode,
-               modifiers: saved.modifiers
-           ) {
+           ShortcutValidation.isValid(keyCode: saved.keyCode, modifiers: saved.modifiers),
+           isAvailable(saved.keyCode, saved.modifiers) {
             shortcut = saved
         } else {
             shortcut = Self.defaultShortcut
-            UserDefaults.standard.removeObject(forKey: defaultsKey)
+            defaults.removeObject(forKey: defaultsKey)
         }
     }
 
     func update(keyCode: UInt32, modifiers: UInt32) {
-        guard modifiers != 0 else { return }
+        guard ShortcutValidation.isValid(keyCode: keyCode, modifiers: modifiers) else { return }
         shortcut = LauncherShortcut(keyCode: keyCode, modifiers: modifiers)
         save()
     }
@@ -42,7 +44,7 @@ final class LauncherShortcutStore: ObservableObject {
 
     private func save() {
         guard let data = try? JSONEncoder().encode(shortcut) else { return }
-        UserDefaults.standard.set(data, forKey: defaultsKey)
+        defaults.set(data, forKey: defaultsKey)
     }
 
     static let defaultShortcut = LauncherShortcut(

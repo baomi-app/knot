@@ -7,8 +7,8 @@ options:
 settings:
   base:
     SWIFT_VERSION: "6.0"
-    MARKETING_VERSION: "0.1.11"
-    CURRENT_PROJECT_VERSION: "20"
+    MARKETING_VERSION: "0.1.12"
+    CURRENT_PROJECT_VERSION: "21"
     CODE_SIGN_STYLE: Automatic
 packages:
   Sparkle:
@@ -77,6 +77,12 @@ targets:
       - path: Knot/Quicklink.swift
       - path: Knot/QuicklinkStore.swift
       - path: Knot/CommandPanelKeyCommand.swift
+      - path: Knot/ShortcutValidation.swift
+      - path: Knot/ShortcutRecorderView.swift
+      - path: Knot/LauncherShortcutStore.swift
+      - path: Knot/CaptureShortcutStore.swift
+      - path: Knot/ClipboardShortcutStore.swift
+      - path: Knot/WindowShortcutStore.swift
       - path: Knot/KnotBarVisibilityPolicy.swift
       - path: Knot/KnotBarUpdateScheduler.swift
       - path: Knot/KnotBarMenuBarMonitor.swift

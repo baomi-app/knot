@@ -13,12 +13,15 @@ final class WindowShortcutStore: ObservableObject {
     static let shared = WindowShortcutStore()
 
     @Published private(set) var shortcuts: [WindowShortcut]
+    private let defaults: UserDefaults
     private let defaultsKey = "windowShortcuts"
 
-    private init() {
-        if let data = UserDefaults.standard.data(forKey: defaultsKey),
+    init(defaults: UserDefaults = .standard) {
+        self.defaults = defaults
+        if let data = defaults.data(forKey: defaultsKey),
            let saved = try? JSONDecoder().decode([WindowShortcut].self, from: data),
-           Set(saved.map(\.action)) == Set(WindowAction.allCases) {
+           Set(saved.map(\.action)) == Set(WindowAction.allCases),
+           saved.allSatisfy({ ShortcutValidation.isValid(keyCode: $0.keyCode, modifiers: $0.modifiers) }) {
             shortcuts = saved
         } else {
             shortcuts = Self.defaultShortcuts
@@ -31,6 +34,7 @@ final class WindowShortcutStore: ObservableObject {
     }
 
     func update(action: WindowAction, keyCode: UInt32, modifiers: UInt32) {
+        guard ShortcutValidation.isValid(keyCode: keyCode, modifiers: modifiers) else { return }
         guard let targetIndex = shortcuts.firstIndex(where: { $0.action == action }) else { return }
         let previousKeyCode = shortcuts[targetIndex].keyCode
         let previousModifiers = shortcuts[targetIndex].modifiers
@@ -54,7 +58,7 @@ final class WindowShortcutStore: ObservableObject {
 
     private func save() {
         guard let data = try? JSONEncoder().encode(shortcuts) else { return }
-        UserDefaults.standard.set(data, forKey: defaultsKey)
+        defaults.set(data, forKey: defaultsKey)
     }
 
     private static let defaultModifiers = UInt32(controlKey | optionKey)

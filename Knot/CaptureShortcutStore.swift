@@ -12,12 +12,14 @@ final class CaptureShortcutStore: ObservableObject {
     static let shared = CaptureShortcutStore()
 
     @Published private(set) var shortcut: CaptureShortcut
+    private let defaults: UserDefaults
     private let defaultsKey = "captureShortcut"
 
-    private init() {
-        if let data = UserDefaults.standard.data(forKey: defaultsKey),
+    init(defaults: UserDefaults = .standard) {
+        self.defaults = defaults
+        if let data = defaults.data(forKey: defaultsKey),
            let saved = try? JSONDecoder().decode(CaptureShortcut.self, from: data),
-           saved.modifiers != 0 {
+           ShortcutValidation.isValid(keyCode: saved.keyCode, modifiers: saved.modifiers) {
             shortcut = saved
         } else {
             shortcut = Self.defaultShortcut
@@ -25,7 +27,7 @@ final class CaptureShortcutStore: ObservableObject {
     }
 
     func update(keyCode: UInt32, modifiers: UInt32) {
-        guard modifiers != 0 else { return }
+        guard ShortcutValidation.isValid(keyCode: keyCode, modifiers: modifiers) else { return }
         shortcut = CaptureShortcut(keyCode: keyCode, modifiers: modifiers)
         save()
     }
@@ -37,7 +39,7 @@ final class CaptureShortcutStore: ObservableObject {
 
     private func save() {
         guard let data = try? JSONEncoder().encode(shortcut) else { return }
-        UserDefaults.standard.set(data, forKey: defaultsKey)
+        defaults.set(data, forKey: defaultsKey)
     }
 
     static let defaultShortcut = CaptureShortcut(

@@ -15,6 +15,9 @@ struct ShortcutsSettingsView: View {
                     .font(.title2.weight(.semibold))
                 Text("Click a shortcut, then press a new combination. Escape cancels recording.")
                     .foregroundStyle(.secondary)
+                Text("F1–F20 can be used on their own. If a key changes brightness or volume, hold Fn/🌐 while pressing it.")
+                    .font(.callout)
+                    .foregroundStyle(.secondary)
             }
 
             Grid(alignment: .leading, horizontalSpacing: 18, verticalSpacing: 7) {

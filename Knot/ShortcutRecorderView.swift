@@ -26,6 +26,9 @@ enum ShortcutDisplayFormatter {
     }
 
     private static func keyLabel(_ keyCode: UInt32) -> String {
+        if let number = ShortcutValidation.functionKeyNumber(for: keyCode) {
+            return "F\(number)"
+        }
         let labels: [UInt32: String] = [
             UInt32(kVK_Space): "Space",
             UInt32(kVK_Return): "↩",
@@ -173,13 +176,13 @@ final class ShortcutRecorderNSView: NSView {
             return
         }
 
+        let newKeyCode = UInt32(event.keyCode)
         let newModifiers = ShortcutDisplayFormatter.carbonModifiers(from: event.modifierFlags)
-        guard newModifiers != 0 else {
+        guard ShortcutValidation.isValid(keyCode: newKeyCode, modifiers: newModifiers) else {
             NSSound.beep()
             return
         }
 
-        let newKeyCode = UInt32(event.keyCode)
         onRecord?(newKeyCode, newModifiers)
         finishRecording()
     }
