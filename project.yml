@@ -7,8 +7,8 @@ options:
 settings:
   base:
     SWIFT_VERSION: "6.0"
-    MARKETING_VERSION: "0.1.10"
-    CURRENT_PROJECT_VERSION: "19"
+    MARKETING_VERSION: "0.1.11"
+    CURRENT_PROJECT_VERSION: "20"
     CODE_SIGN_STYLE: Automatic
 packages:
   Sparkle:
