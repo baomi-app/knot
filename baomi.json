@@ -57,7 +57,7 @@
   "links": [
     {
       "label": { "en": "Download", "zh": "下载" },
-      "href": "https://github.com/baomi-app/knot/releases/latest/download/Knot.dmg"
+      "href": "https://github.com/baomi-app/knot/releases/latest"
     },
     {
       "label": { "en": "GitHub", "zh": "GitHub" },
