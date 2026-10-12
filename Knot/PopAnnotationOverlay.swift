@@ -36,6 +36,7 @@ final class OverlayModel: ObservableObject {
     var onSave: () -> Void = {}
     var onCancel: () -> Void = {}
     var onOCR: (() -> Void)? = nil
+    var onToolChange: () -> Void = {}
 }
 
 // MARK: - OCR Preview HUD (SwiftUI)
@@ -219,6 +220,7 @@ struct AnnotationToolbar: View {
     private func toolButton(_ kind: AnnoKind) -> some View {
         Button {
             model.tool = kind
+            model.onToolChange()
         } label: {
             Image(systemName: kind.symbol)
                 .frame(width: 28, height: 24)
@@ -228,7 +230,9 @@ struct AnnotationToolbar: View {
                 .foregroundStyle(model.tool == kind ? Brand.charcoal : Color.white.opacity(0.85))
         }
         .buttonStyle(.plain)
-        .help(kind.label)
+        .help(kind == .text
+            ? String(localized: "文字：回车换行，⌘↩ 完成；拖动文字可移动，双击可编辑")
+            : kind.label)
     }
 }
 
@@ -304,15 +308,9 @@ enum AnnotationRenderer {
 
         case .text:
             guard !a.text.isEmpty else { return }
-            let fontSize = max(a.fontSize * lineScale, 8)
-            let attrs: [NSAttributedString.Key: Any] = [
-                .font: NSFont.systemFont(ofSize: fontSize, weight: .semibold),
-                .foregroundColor: color
-            ]
-            let ns = a.text as NSString
-            let size = ns.size(withAttributes: attrs)
-            let top = P(a.start, rect)
-            ns.draw(at: NSPoint(x: top.x, y: top.y - size.height), withAttributes: attrs)
+            AnnotationTextLayout(text: a.text, fontSize: a.fontSize,
+                                 color: color, width: a.textWidth)
+                .draw(at: P(a.start, rect), scale: lineScale)
 
         case .blur:
             guard let pix = pixelated else { return }
@@ -339,8 +337,13 @@ final class AnnotationCanvasView: NSView {
     private var draft: Annotation?
     private weak var model: OverlayModel?
 
-    private var textField: NSTextField?
+    private var textView: AnnotationTextView?
+    private var textScrollView: NSScrollView?
     private var pendingText: Annotation?
+    private var selectedTextID: UUID?
+    private var textDrag: AnnotationTextDrag?
+    private var textDragUndoState: [Annotation]?
+    private var undoHistory: [[Annotation]] = []
 
     /// Drag anchor while the move tool pans the whole capture.
     private var movePrev: CGPoint?
@@ -383,6 +386,13 @@ final class AnnotationCanvasView: NSView {
 
     override func resetCursorRects() {
         addCursorRect(selRect, cursor: .crosshair)
+
+        if model?.tool == .move || model?.tool == .text {
+            for annotation in annotations where annotation.kind == .text {
+                let rect = textLayout(for: annotation).frame(at: AnnotationRenderer.P(annotation.start, selRect))
+                addCursorRect(rect.intersection(selRect), cursor: .openHand)
+            }
+        }
         
         // Resize handles hover cursors
         addCursorRect(handleRect(for: .left), cursor: .resizeLeftRight)
@@ -469,16 +479,27 @@ final class AnnotationCanvasView: NSView {
 
     // MARK: Editing API (wired to toolbar)
 
+    func finishTextEditing() {
+        commitText()
+        window?.invalidateCursorRects(for: self)
+    }
+
     func undo() {
-        if textField != nil { cancelText(); return }
-        if draft != nil { draft = nil } else if !annotations.isEmpty { annotations.removeLast() }
+        if textView != nil { cancelText(); return }
+        if draft != nil { draft = nil }
+        else if let previous = undoHistory.popLast() { annotations = previous }
+        selectedTextID = nil
+        window?.invalidateCursorRects(for: self)
         needsDisplay = true
     }
 
     func clearAll() {
         cancelText()
         draft = nil
+        if !annotations.isEmpty { undoHistory.append(annotations) }
         annotations.removeAll()
+        selectedTextID = nil
+        window?.invalidateCursorRects(for: self)
         needsDisplay = true
     }
 
@@ -572,8 +593,19 @@ final class AnnotationCanvasView: NSView {
         bounds.fill()
 
         AnnotationRenderer.draw(base: baseImage, pixelated: pixelImage,
-                                annotations: annotations, draft: draft,
+                                annotations: annotations.filter { $0.id != pendingText?.id }, draft: draft,
                                 into: selRect, lineScale: 1)
+        if let selected = annotations.first(where: { $0.id == selectedTextID }), textView == nil {
+            let rect = textLayout(for: selected).frame(at: AnnotationRenderer.P(selected.start, selRect))
+            NSGraphicsContext.saveGraphicsState()
+            NSBezierPath(rect: selRect).addClip()
+            let outline = NSBezierPath(rect: rect.insetBy(dx: -3, dy: -3))
+            outline.setLineDash([4, 3], count: 2, phase: 0)
+            outline.lineWidth = 1
+            NSColor(Brand.cornYellow).setStroke()
+            outline.stroke()
+            NSGraphicsContext.restoreGraphicsState()
+        }
         let border = NSBezierPath(rect: selRect)
         border.lineWidth = 1.5
         NSColor(Brand.cornYellow).setStroke()
@@ -597,7 +629,7 @@ final class AnnotationCanvasView: NSView {
     override func mouseDown(with event: NSEvent) {
         let p = convert(event.locationInWindow, from: nil)
         
-        if textField != nil { commitText(); return }
+        if textView != nil { commitText(); return }
 
         // Check resize handles first
         if let h = handle(at: p) {
@@ -608,6 +640,19 @@ final class AnnotationCanvasView: NSView {
         guard selRect.contains(p) else { return }
 
         let tool = model?.tool ?? .rect
+        if (tool == .move || tool == .text), let annotation = textAnnotation(at: p) {
+            selectedTextID = annotation.id
+            if event.clickCount == 2 {
+                beginText(annotation)
+            } else {
+                textDrag = AnnotationTextDrag(id: annotation.id, start: annotation.start,
+                                              mouseDown: p, textSize: textLayout(for: annotation).size)
+                textDragUndoState = annotations
+            }
+            needsDisplay = true
+            return
+        }
+        selectedTextID = nil
         if tool == .move {
             movePrev = p
             return
@@ -624,6 +669,11 @@ final class AnnotationCanvasView: NSView {
 
     override func mouseDragged(with event: NSEvent) {
         let p = convert(event.locationInWindow, from: nil)
+        if let drag = textDrag, let index = annotations.firstIndex(where: { $0.id == drag.id }) {
+            annotations[index].start = drag.position(at: p, in: selRect)
+            needsDisplay = true
+            return
+        }
         let clampedP = CGPoint(
             x: min(max(p.x, bounds.minX), bounds.maxX),
             y: min(max(p.y, bounds.minY), bounds.maxY)
@@ -684,6 +734,16 @@ final class AnnotationCanvasView: NSView {
     }
 
     override func mouseUp(with event: NSEvent) {
+        if let drag = textDrag {
+            if let current = annotations.first(where: { $0.id == drag.id }),
+               current.start != drag.start, let previous = textDragUndoState {
+                undoHistory.append(previous)
+            }
+            textDrag = nil
+            textDragUndoState = nil
+            window?.invalidateCursorRects(for: self)
+            return
+        }
         if activeHandle != nil {
             activeHandle = nil
             onMoveEnded?(selRect)
@@ -695,51 +755,102 @@ final class AnnotationCanvasView: NSView {
         }
         guard let d = draft else { return }
         draft = nil
-        if d.isMeaningful { annotations.append(d) }
+        if d.isMeaningful {
+            undoHistory.append(annotations)
+            annotations.append(d)
+        }
         needsDisplay = true
     }
 
     // MARK: Text tool
 
     private func beginText(at p: CGPoint) {
-        let tf = NSTextField(frame: NSRect(x: p.x, y: p.y - 24, width: 200, height: 24))
-        tf.placeholderString = String(localized: "输入文字")
-        tf.font = .systemFont(ofSize: 15, weight: .semibold)
-        tf.textColor = NSColor(model?.color ?? Palette.red)
-        tf.backgroundColor = NSColor.black.withAlphaComponent(0.5)
-        tf.isBordered = false
-        tf.focusRingType = .none
-        tf.target = self
-        tf.action = #selector(textCommitted)
-        addSubview(tf)
-        window?.makeFirstResponder(tf)
-        textField = tf
-
-        var a = newAnnotation(at: norm(CGPoint(x: p.x, y: p.y)))
+        let x = min(p.x, selRect.maxX - min(80, selRect.width))
+        var a = newAnnotation(at: norm(CGPoint(x: x, y: p.y)))
         a.kind = .text
-        pendingText = a
+        a.textWidth = min(280, selRect.maxX - x)
+        beginText(a)
     }
 
-    @objc private func textCommitted() { commitText() }
+    private func beginText(_ annotation: Annotation) {
+        pendingText = annotation
+        selectedTextID = annotation.id
+        let editor = AnnotationTextView(frame: CGRect(x: 0, y: 0, width: annotation.textWidth, height: 30),
+                                        text: annotation.text, fontSize: annotation.fontSize,
+                                        color: NSColor(annotation.color))
+        let scroll = NSScrollView(frame: .zero)
+        scroll.drawsBackground = false
+        scroll.borderType = .noBorder
+        scroll.hasVerticalScroller = false
+        scroll.documentView = editor
+        textView = editor
+        textScrollView = scroll
+        editor.onChange = { [weak self] in self?.resizeTextEditor() }
+        editor.onCommit = { [weak self] in self?.commitText() }
+        editor.onCancel = { [weak self] in self?.cancelText() }
+        addSubview(scroll)
+        resizeTextEditor()
+        window?.makeFirstResponder(editor)
+        editor.setSelectedRange(NSRange(location: (annotation.text as NSString).length, length: 0))
+        needsDisplay = true
+    }
+
+    private func resizeTextEditor() {
+        guard let editor = textView, let scroll = textScrollView, var annotation = pendingText else { return }
+        annotation.text = editor.string
+        let layout = textLayout(for: annotation)
+        let height = min(layout.size.height, selRect.height)
+        var top = AnnotationRenderer.P(annotation.start, selRect)
+        top.y = min(selRect.maxY, max(top.y, selRect.minY + height))
+        annotation.start = norm(top)
+        pendingText = annotation
+        scroll.frame = CGRect(x: top.x, y: top.y - height, width: annotation.textWidth, height: height)
+        editor.setFrameSize(CGSize(width: annotation.textWidth, height: layout.size.height))
+        editor.scrollRangeToVisible(editor.selectedRange())
+    }
 
     private func commitText() {
-        guard let tf = textField, var a = pendingText else { return }
-        let s = tf.stringValue
-        tf.removeFromSuperview()
-        textField = nil
-        pendingText = nil
-        if !s.isEmpty {
-            a.text = s
-            a.color = model?.color ?? a.color
+        guard let editor = textView, var a = pendingText else { return }
+        a.text = editor.string
+        if let index = annotations.firstIndex(where: { $0.id == a.id }) {
+            let previous = annotations[index]
+            if previous.text != a.text || previous.start != a.start {
+                undoHistory.append(annotations)
+                if a.text.isEmpty { annotations.remove(at: index) }
+                else { annotations[index] = a }
+            }
+        } else if !a.text.isEmpty {
+            undoHistory.append(annotations)
             annotations.append(a)
         }
+        removeTextEditor()
+        window?.invalidateCursorRects(for: self)
         needsDisplay = true
     }
 
     private func cancelText() {
-        textField?.removeFromSuperview()
-        textField = nil
+        removeTextEditor()
+        needsDisplay = true
+    }
+
+    private func removeTextEditor() {
+        if window?.firstResponder === textView { window?.makeFirstResponder(self) }
+        textScrollView?.removeFromSuperview()
+        textScrollView = nil
+        textView = nil
         pendingText = nil
+    }
+
+    private func textLayout(for annotation: Annotation) -> AnnotationTextLayout {
+        AnnotationTextLayout(text: annotation.text, fontSize: annotation.fontSize,
+                             color: NSColor(annotation.color), width: annotation.textWidth)
+    }
+
+    private func textAnnotation(at point: CGPoint) -> Annotation? {
+        annotations.reversed().first {
+            $0.kind == .text && textLayout(for: $0)
+                .frame(at: AnnotationRenderer.P($0.start, selRect)).insetBy(dx: -4, dy: -4).contains(point)
+        }
     }
 
     // MARK: Helpers
@@ -826,6 +937,7 @@ final class AnnotationOverlayController {
         model.onOCR = { [weak canvas] in
             canvas?.performOCR()
         }
+        model.onToolChange = { [weak canvas] in canvas?.finishTextEditing() }
 
         // When the move tool pans the capture, keep the dimming hole underneath aligned.
         canvas.onSelRectChanged = { rect in

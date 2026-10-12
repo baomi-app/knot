@@ -50,6 +50,7 @@ struct Annotation: Identifiable {
     var end: CGPoint = .zero          // normalized
     var points: [CGPoint] = []        // normalized (pen)
     var text: String = ""
+    var textWidth: CGFloat = 280      // wrap width in original-image points
 
     /// Whether this annotation is worth keeping (filters out accidental taps).
     var isMeaningful: Bool {
