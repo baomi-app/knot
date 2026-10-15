@@ -57,7 +57,13 @@ final class CommandPanelController: NSObject, NSWindowDelegate {
                 panel.onShowSettings?()
                 return nil
             case .acceptSuggestion:
-                return panel.onAcceptSuggestion?() == true ? nil : event
+                if let editor = panel.firstResponder as? NSTextView, editor.hasMarkedText() {
+                    return event
+                }
+                panel.onAcceptSuggestion?()
+                // Tab is reserved for completion, even without a suggestion.
+                // Default focus traversal can reselect the search field's text.
+                return nil
             case nil:
                 return event
             }
